@@ -1,0 +1,297 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Transform": "AWS::Serverless-2016-10-31",
+    "Description": "Template for OpenWeatherMap Pipeline",
+    "Parameters": {
+        "WeatherSourceName": {
+            "Description": "API Name",
+            "Type": "String"
+        },
+        "ApplicationName": {
+            "Description": "Application Name",
+            "Type": "String"
+        },
+        "Env": {
+            "Description": "Environment",
+            "Type": "String"
+        },
+        "OWMApiKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "OWMGeocodeBaseUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "OWMCurrentWeatherBaseUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "TelegramBotToken": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "TelegramChatId": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MongodbConnectionString": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MongodbDatabase": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletinEmailAddress": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletEmailAddressAppPassword": {
+            "Type": "String",
+            "NoEcho": "true"
+        }
+    },
+    "Resources": {
+        "LambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambdaIam${Env}"
+                },
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AWSLambdaExecute",
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+                ],
+                "Path": "/"
+            }
+        },
+        "LambdaLibsLayer": {
+            "Type": "AWS::Serverless::LayerVersion",
+            "Properties": {
+                "CompatibleRuntimes": [
+                    "python3.12",
+                    "python3.11"
+                ],
+                "ContentUri": "layers/libs",
+                "Description": "Libraries for OpenWeatherMap Bulletin Lambda",
+                "LayerName": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambaLib${Env}"
+                },
+                "LicenseInfo": "MIT"
+            }
+        },
+        "LambdaUtilsLayer": {
+            "Type": "AWS::Serverless::LayerVersion",
+            "Properties": {
+                "CompatibleRuntimes": [
+                    "python3.12",
+                    "python3.11"
+                ],
+                "ContentUri": "layers/helper_functions",
+                "Description": "Helper Modules for OpenWeatherMap Bulletin Lambda",
+                "LayerName": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambaModules${Env}"
+                },
+                "LicenseInfo": "MIT"
+            }
+        },
+        "LambdaFunction": {
+            "Type": "AWS::Serverless::Function",
+            "Properties": {
+                "FunctionName": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}Bulletin${Env}"
+                },
+                "Description": "Lambda Function to pull Weather Info from OpenWeatherMap API",
+                "Runtime": "python3.12",
+                "CodeUri": "lambda",
+                "Handler": "lambda_function.lambda_handler",
+                "MemorySize": 128,
+                "Timeout": 300,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaRole",
+                        "Arn"
+                    ]
+                },
+                "Environment": {
+                    "Variables": {
+                        "Env": {
+                            "Ref": "Env"
+                        },
+                        "TelegramBotToken": {
+                            "Ref": "TelegramBotToken"
+                        },
+                        "TelegramChatId": {
+                            "Ref": "TelegramChatId"
+                        },
+                        "MongodbConnectionString": {
+                            "Ref": "MongodbConnectionString"
+                        },
+                        "MongodbDatabase": {
+                            "Ref": "MongodbDatabase"
+                        },
+                        "BulletinEmailAddress": {
+                            "Ref": "BulletinEmailAddress"
+                        },
+                        "BulletEmailAddressAppPassword": {
+                            "Ref": "BulletEmailAddressAppPassword"
+                        }
+                    }
+                },
+                "Layers": [
+                    {
+                        "Fn::GetAtt": [
+                            "LambdaLibsLayer",
+                            "LayerVersionArn"
+                        ]
+                    },
+                    {
+                        "Fn::GetAtt": [
+                            "LambdaUtilsLayer",
+                            "LayerVersionArn"
+                        ]
+                    }
+                ]
+            },
+            "DependsOn": [
+                "LambdaRole",
+                "LambdaLibsLayer"
+            ]
+        },
+        "ScheduledRule": {
+            "Type": "AWS::Events::Rule",
+            "Properties": {
+                "Name": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}EventRule${Env}"
+                },
+                "Description": "ScheduledRule",
+                "ScheduleExpression": "cron(30 0 * * ? *)",
+                "State": "ENABLED",
+                "Targets": [
+                    {
+                        "Arn": {
+                            "Fn::GetAtt": [
+                                "LambdaFunction",
+                                "Arn"
+                            ]
+                        },
+                        "Id": "LambdaFunction"
+                    }
+                ]
+            },
+            "DependsOn": "LambdaFunction"
+        },
+        "PermissionForEventsToInvokeLambda": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFunction"
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {
+                    "Fn::GetAtt": [
+                        "ScheduledRule",
+                        "Arn"
+                    ]
+                }
+            },
+            "DependsOn": "LambdaFunction"
+        },
+        "LambdaRolePolicies": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": {
+                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambdaPolicy${Env}"
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "BasePermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "secretsmanager:*",
+                                "cloudformation:CreateChangeSet",
+                                "cloudformation:DescribeChangeSet",
+                                "cloudformation:DescribeStackResource",
+                                "cloudformation:DescribeStacks",
+                                "cloudformation:ExecuteChangeSet",
+                                "docdb-elastic:GetCluster",
+                                "docdb-elastic:ListClusters",
+                                "ec2:DescribeSecurityGroups",
+                                "ec2:DescribeSubnets",
+                                "ec2:DescribeVpcs",
+                                "kms:DescribeKey",
+                                "kms:ListAliases",
+                                "kms:ListKeys",
+                                "lambda:ListFunctions",
+                                "rds:DescribeDBClusters",
+                                "rds:DescribeDBInstances",
+                                "redshift:DescribeClusters",
+                                "redshift-serverless:ListWorkgroups",
+                                "redshift-serverless:GetNamespace",
+                                "tag:GetResources"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Sid": "LambdaPermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:AddPermission",
+                                "lambda:CreateFunction",
+                                "lambda:GetFunction",
+                                "lambda:InvokeFunction",
+                                "lambda:UpdateFunctionConfiguration"
+                            ],
+                            "Resource": "arn:aws:lambda:*:*:function:SecretsManager*"
+                        },
+                        {
+                            "Sid": "SARPermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "serverlessrepo:CreateCloudFormationChangeSet",
+                                "serverlessrepo:GetApplication"
+                            ],
+                            "Resource": "arn:aws:serverlessrepo:*:*:applications/SecretsManager*"
+                        },
+                        {
+                            "Sid": "S3Permissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                "arn:aws:s3:::awsserverlessrepo-changesets*",
+                                "arn:aws:s3:::secrets-manager-rotation-apps-*/*"
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "LambdaRole"
+                    }
+                ]
+            }
+        }
+    }
+}

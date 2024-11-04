@@ -1,20 +1,20 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Parent Stack for Lambda Sample with Nested Stack",
+    "Description": "Parent Stack for ETLFS Pipelines",
     "Parameters": {
-      "SourceName": {
-        "Type": "String",
-        "Description": "API Name"
-      },
-      "ApplicationName": {
-        "Type": "String",
-        "Description": "Application Name"
-      },
-      "Env": {
-        "Type": "String",
-        "Description": "Environment"
-      },
-      "TelegramBotToken": {
+        "SourceName": {
+            "Type": "String",
+            "Description": "API Name"
+        },
+        "ApplicationName": {
+            "Type": "String",
+            "Description": "Application Name"
+        },
+        "Env": {
+            "Type": "String",
+            "Description": "Environment"
+        },
+        "TelegramBotToken": {
             "Type": "String",
             "NoEcho": "true"
         },
@@ -81,94 +81,136 @@
         "GoogleMapsApiPath": {
             "Type": "String",
             "NoEcho": "true"
+        },
+        "WeatherSourceName": {
+            "Type": "String",
+            "Description": "API Name"
+        },
+        "OWMApiKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "OWMGeocodeBaseUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "OWMCurrentWeatherBaseUrl": {
+            "Type": "String",
+            "NoEcho": "true"
         }
     },
     "Resources": {
-      "GarminStatisticsStack": {
-        "Type": "AWS::CloudFormation::Stack",
-        "Properties": {
-          "TemplateURL": "./garminconnect/garmin-connect-stack.json",
-          "Parameters": {
-            "SourceName": {
-              "Ref": "SourceName"
-            },
-            "ApplicationName": {
-              "Ref": "ApplicationName"
-            },
-            "Env": {
-              "Ref": "Env"
-            },
-            "TelegramBotToken": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "TelegramChatId": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "MyGarminPassword": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "MyEmailAddress": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "AwsAccessKey": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "AwsSecretAccessKey": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "AwsS3BucketName": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "AwsS3LambdaFolderKey": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "AwsS3LambdaGarminFilename": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "MongodbConnectionString": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "MongodbDatabase": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "BulletinEmailAddress": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "BulletEmailAddressAppPassword": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "RecEmail": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "RunningMapPath": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "GoogleApiKey": {
-                "Type": "String",
-                "NoEcho": "true"
-            },
-            "GoogleMapsApiPath": {
-                "Type": "String",
-                "NoEcho": "true"
+        "GarminStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": "./garminconnect/garmin-connect-stack.json",
+                "Parameters": {
+                    "SourceName": {
+                        "Ref": "SourceName"
+                    },
+                    "ApplicationName": {
+                        "Ref": "ApplicationName"
+                    },
+                    "Env": {
+                        "Ref": "Env"
+                    },
+                    "TelegramBotToken": {
+                        "Ref": "TelegramBotToken"
+                    },
+                    "TelegramChatId": {
+                        "Ref": "TelegramChatId"
+                    },
+                    "MyGarminPassword": {
+                        "Ref": "MyGarminPassword"
+                    },
+                    "MyEmailAddress": {
+                        "Ref": "MyEmailAddress"
+                    },
+                    "AwsAccessKey": {
+                        "Ref": "AwsAccessKey"
+                    },
+                    "AwsSecretAccessKey": {
+                        "Ref": "AwsSecretAccessKey"
+                    },
+                    "AwsS3BucketName": {
+                        "Ref": "AwsS3BucketName"
+                    },
+                    "AwsS3LambdaFolderKey": {
+                        "Ref": "AwsS3LambdaFolderKey"
+                    },
+                    "AwsS3LambdaGarminFilename": {
+                        "Ref": "AwsS3LambdaGarminFilename"
+                    },
+                    "MongodbConnectionString": {
+                        "Ref": "MongodbConnectionString"
+                    },
+                    "MongodbDatabase": {
+                        "Ref": "MongodbDatabase"
+                    },
+                    "BulletinEmailAddress": {
+                        "Ref": "BulletinEmailAddress"
+                    },
+                    "BulletEmailAddressAppPassword": {
+                        "Ref": "BulletEmailAddressAppPassword"
+                    },
+                    "RecEmail": {
+                        "Ref": "RecEmail"
+                    },
+                    "RunningMapPath": {
+                        "Ref": "RunningMapPath"
+                    },
+                    "GoogleApiKey": {
+                        "Ref": "GoogleApiKey"
+                    },
+                    "GoogleMapsApiPath": {
+                        "Ref": "GoogleMapsApiPath"
+                    }
+                }
             }
-          }
+        },
+        "OWMStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": "./weatherdata/weather-data-stack.json",
+                "Parameters": {
+                    "WeatherSourceName": {
+                        "Ref": "WeatherSourceName"
+                    },
+                    "ApplicationName": {
+                        "Ref": "ApplicationName"
+                    },
+                    "Env": {
+                        "Ref": "Env"
+                    },
+                    "TelegramBotToken": {
+                        "Ref": "TelegramBotToken"
+                    },
+                    "TelegramChatId": {
+                        "Ref": "TelegramChatId"
+                    },
+                    "MongodbConnectionString": {
+                        "Ref": "MongodbConnectionString"
+                    },
+                    "MongodbDatabase": {
+                        "Ref": "MongodbDatabase"
+                    },
+                    "BulletinEmailAddress": {
+                        "Ref": "BulletinEmailAddress"
+                    },
+                    "BulletEmailAddressAppPassword": {
+                        "Ref": "BulletEmailAddressAppPassword"
+                    },
+                    "OWMApiKey": {
+                        "Ref": "OWMApiKey"
+                    },
+                    "OWMGeocodeBaseUrl": {
+                        "Ref": "OWMGeocodeBaseUrl"
+                    },
+                    "OWMCurrentWeatherBaseUrl": {
+                        "Ref": "OWMCurrentWeatherBaseUrl"
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  
+}
