@@ -132,27 +132,42 @@
                 },
                 "Environment": {
                     "Variables": {
-                        "Env": {
-                            "Ref": "Env"
-                        },
-                        "TelegramBotToken": {
-                            "Ref": "TelegramBotToken"
-                        },
-                        "TelegramChatId": {
-                            "Ref": "TelegramChatId"
-                        },
-                        "MongodbConnectionString": {
-                            "Ref": "MongodbConnectionString"
-                        },
-                        "MongodbDatabase": {
-                            "Ref": "MongodbDatabase"
-                        },
-                        "BulletinEmailAddress": {
-                            "Ref": "BulletinEmailAddress"
-                        },
-                        "BulletEmailAddressAppPassword": {
-                            "Ref": "BulletEmailAddressAppPassword"
-                        }
+                       "WeatherSourceName": {
+                        "Ref": "WeatherSourceName"
+                    },
+                    "ApplicationName": {
+                        "Ref": "ApplicationName"
+                    },
+                    "Env": {
+                        "Ref": "Env"
+                    },
+                    "TelegramBotToken": {
+                        "Ref": "TelegramBotToken"
+                    },
+                    "TelegramChatId": {
+                        "Ref": "TelegramChatId"
+                    },
+                    "MongodbConnectionString": {
+                        "Ref": "MongodbConnectionString"
+                    },
+                    "MongodbDatabase": {
+                        "Ref": "MongodbDatabase"
+                    },
+                    "BulletinEmailAddress": {
+                        "Ref": "BulletinEmailAddress"
+                    },
+                    "BulletEmailAddressAppPassword": {
+                        "Ref": "BulletEmailAddressAppPassword"
+                    },
+                    "OWMApiKey": {
+                        "Ref": "OWMApiKey"
+                    },
+                    "OWMGeocodeBaseUrl": {
+                        "Ref": "OWMGeocodeBaseUrl"
+                    },
+                    "OWMCurrentWeatherBaseUrl": {
+                        "Ref": "OWMCurrentWeatherBaseUrl"
+                    }
                     }
                 },
                 "Layers": [

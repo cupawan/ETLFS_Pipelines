@@ -21,15 +21,15 @@ class SendEmail:
         self.bulletin_email_pw = os.environ['BulletEmailAddressAppPassword'].replace("_"," ")
         self.rec_mail = os.environ['RecEmail']
     
-    def send_email(self,  body,subject = "", file_paths = None):
+    def send_email(self, send_to, subject, email_body, file_paths = None):
         msg = MIMEMultipart()
         msg['From'] = self.bulletin_email
-        msg['To'] =self.rec_mail
+        msg['To'] = send_to
         msg['Subject'] = f"{self.sync_date} {subject.strip()}"
         if not self.is_html:
-            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(email_body, 'plain'))
         else:            
-            msg.attach(MIMEText(body, 'html'))
+            msg.attach(MIMEText(email_body, 'html'))
         if file_paths and isinstance(file_paths,list):
             for file_path in file_paths:
                 attachment = open(file_path, 'rb')

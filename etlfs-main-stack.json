@@ -100,6 +100,20 @@
         }
     },
     "Resources": {
+        "CommonStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": "./common/etlfs-shared-stack.json",
+                "Parameters": {
+                    "ApplicationName": {
+                        "Ref": "ApplicationName"
+                    },
+                    "Env": {
+                        "Ref": "Env"
+                    }
+                }
+            }
+        },
         "GarminStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {

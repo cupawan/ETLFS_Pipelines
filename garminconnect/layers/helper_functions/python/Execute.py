@@ -53,7 +53,7 @@ class Helper:
             logger.info("All data fetched successfully. Formatting email body.")
             email_body = Formatter().garminMainEmailFormatter(running_html=r_html, sleep_html=s_html, body_stats_html=b_html, metadata=metadata)
             logger.info("Sending email with Garmin statistics")
-            email_message = SendEmail(is_html=True).send_email(body=email_body, subject="Garmin Statistics")
+            email_message = SendEmail(is_html=True).send_email(send_to = os.environ['RecEmail'], subject = "Garmin Statistics", email_body = email_body)
             # self._send_telegram_doc(html_body=email_body)
             logger.info("Updating MongoDB with Garmin status")
             write_in_mongo = mongo_instance.update_record(

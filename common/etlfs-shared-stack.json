@@ -1,0 +1,27 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Transform": "AWS::Serverless-2016-10-31",
+    "Description": "Template for Lambda Sample.",
+    "Parameters": {
+        "ApplicationName": {
+            "Description": "Application Name",
+            "Type": "String"
+        },
+        "Env": {
+            "Description": "Environment",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "CommonS3Bucket" :
+        {
+            "Type" : "AWS::S3::Bucket",
+            "Properties" : {
+                "BucketName" :{
+                    "Fn::Sub": "${ApplicationName}CommonBucket${Env}"
+                }
+              }
+          }
+          
+    }
+}

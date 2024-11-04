@@ -16,7 +16,7 @@ mongo_instance = MongoUtils()
 
 def main():
     help = Helper()
-    status_mongo = mongo_instance.find_one(collection_name = 'garmin_status', query = {'date': help.sync_date,'isUpdated': True})
+    status_mongo = mongo_instance.find_by_query(collection_name = 'garmin_status',query = {'date': help.sync_date,'isUpdated': True})
     logger.info(f"Sync Status: {status_mongo}")
     if not status_mongo:
         logger.info(f"Starting Execution")

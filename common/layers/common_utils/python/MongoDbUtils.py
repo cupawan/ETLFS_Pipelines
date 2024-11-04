@@ -18,10 +18,16 @@ class MongoUtils:
             result = collection.insert_many(data)
         return result.inserted_id
 
-    def find_one(self, collection_name, query):
+    def find_by_query(self, collection_name, query):
         collection = self.client[collection_name]
         result = collection.find_one(query)
         return result
+    
+    def find_one(self, collection_name, key, value):
+        collection = self.client[collection_name]
+        result = collection.find({key: value})
+        results = list(result)
+        return results
         
     def update_record(self, collection_name, query, update_data, upsert):
         collection = self.client[collection_name]
