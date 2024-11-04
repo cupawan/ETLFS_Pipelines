@@ -1,0 +1,174 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Parent Stack for Lambda Sample with Nested Stack",
+    "Parameters": {
+      "SourceName": {
+        "Type": "String",
+        "Description": "API Name"
+      },
+      "ApplicationName": {
+        "Type": "String",
+        "Description": "Application Name"
+      },
+      "Env": {
+        "Type": "String",
+        "Description": "Environment"
+      },
+      "TelegramBotToken": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "TelegramChatId": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MyGarminPassword": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MyEmailAddress": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "AwsAccessKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "AwsSecretAccessKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "AwsS3BucketName": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "AwsS3LambdaFolderKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "AwsS3LambdaGarminFilename": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MongodbConnectionString": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "MongodbDatabase": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletinEmailAddress": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletEmailAddressAppPassword": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "RecEmail": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "RunningMapPath": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "GoogleApiKey": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "GoogleMapsApiPath": {
+            "Type": "String",
+            "NoEcho": "true"
+        }
+    },
+    "Resources": {
+      "GarminStatisticsStack": {
+        "Type": "AWS::CloudFormation::Stack",
+        "Properties": {
+          "TemplateURL": "./garminconnect/garmin-connect-stack.json",
+          "Parameters": {
+            "SourceName": {
+              "Ref": "SourceName"
+            },
+            "ApplicationName": {
+              "Ref": "ApplicationName"
+            },
+            "Env": {
+              "Ref": "Env"
+            },
+            "TelegramBotToken": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "TelegramChatId": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "MyGarminPassword": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "MyEmailAddress": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "AwsAccessKey": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "AwsSecretAccessKey": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "AwsS3BucketName": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "AwsS3LambdaFolderKey": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "AwsS3LambdaGarminFilename": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "MongodbConnectionString": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "MongodbDatabase": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "BulletinEmailAddress": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "BulletEmailAddressAppPassword": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "RecEmail": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "RunningMapPath": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "GoogleApiKey": {
+                "Type": "String",
+                "NoEcho": "true"
+            },
+            "GoogleMapsApiPath": {
+                "Type": "String",
+                "NoEcho": "true"
+            }
+          }
+        }
+      }
+    }
+  }
+  
