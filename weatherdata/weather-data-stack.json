@@ -119,7 +119,7 @@
             "Type": "AWS::Serverless::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-bulletin${Env}"
+                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-${Env}"
                 },
                 "Description": "Lambda Function to pull Weather Info from OpenWeatherMap API",
                 "Runtime": "python3.12",
