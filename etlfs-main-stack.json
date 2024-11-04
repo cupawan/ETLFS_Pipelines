@@ -178,6 +178,9 @@
                     },
                     "GoogleMapsApiPath": {
                         "Ref": "GoogleMapsApiPath"
+                    },
+                    "CommonLayerArn": {
+                        "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
                     }
                 }
             }
@@ -222,6 +225,9 @@
                     },
                     "OWMCurrentWeatherBaseUrl": {
                         "Ref": "OWMCurrentWeatherBaseUrl"
+                    },
+                    "CommonLayerArn": {
+                        "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
                     }
                 }
             }

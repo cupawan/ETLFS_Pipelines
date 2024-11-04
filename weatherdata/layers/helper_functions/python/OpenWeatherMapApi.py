@@ -5,8 +5,8 @@ import requests
 class OpenWeatherMap:
     def __init__(self):
         self.api_key = os.environ['OWMApiKey']
-        self.geocode_base_url = os.environ['OWMGeocodeBaseUrl']
-        self.current_weather_base_url = os.environ['OWMCurrentWeatherBaseUrl']
+        self.geocode_base_url = os.environ['OWMGeocodeBaseUrl'].replace("=//","://")
+        self.current_weather_base_url = os.environ['OWMCurrentWeatherBaseUrl'].replace("=//","://")
         
         
     def geocode(self, address, limit=1):

@@ -13,15 +13,34 @@
         }
     },
     "Resources": {
-        "CommonS3Bucket" :
-        {
-            "Type" : "AWS::S3::Bucket",
-            "Properties" : {
-                "BucketName" :{
-                    "Fn::Sub": "${ApplicationName}CommonBucket${Env}"
+        "CommonS3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Fn::Sub": "${ApplicationName}-common-${Env}"
                 }
-              }
-          }
-          
+            }
+        },
+        "CommonLambdaLayer": {
+            "Type": "AWS::Serverless::LayerVersion",
+            "Properties": {
+                "CompatibleRuntimes": [
+                    "python3.12",
+                    "python3.11"
+                ],
+                "ContentUri": "layers/common_utils",
+                "Description": "Common Modules for ETLFS Pipelines",
+                "LayerName": {
+                    "Fn::Sub": "${ApplicationName}CommonLayer${Env}"
+                },
+                "LicenseInfo": "MIT"
+            }
+        }
+    },
+    "Outputs": {
+        "CommonLayerArn": {
+            "Description": "ARN of the Common Lambda Layer",
+            "Value": { "Ref": "CommonLambdaLayer" }
+        }
     }
 }

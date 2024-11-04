@@ -50,6 +50,9 @@
         "BulletEmailAddressAppPassword": {
             "Type": "String",
             "NoEcho": "true"
+        },
+        "CommonLayerArn": {
+            "Type": "String"
         }
     },
     "Resources": {
@@ -116,7 +119,7 @@
             "Type": "AWS::Serverless::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}Bulletin${Env}"
+                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-bulletin${Env}"
                 },
                 "Description": "Lambda Function to pull Weather Info from OpenWeatherMap API",
                 "Runtime": "python3.12",
@@ -182,6 +185,9 @@
                             "LambdaUtilsLayer",
                             "LayerVersionArn"
                         ]
+                    },
+                    {
+                        "Fn::Sub": "${CommonLayerArn}"
                     }
                 ]
             },
