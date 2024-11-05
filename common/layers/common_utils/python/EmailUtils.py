@@ -19,7 +19,6 @@ class SendEmail:
         self.sync_date = datetime.datetime.today().astimezone(ist).strftime('%d-%m-%y')
         self.bulletin_email = os.environ['BulletinEmailAddress']
         self.bulletin_email_pw = os.environ['BulletEmailAddressAppPassword'].replace("_"," ")
-        self.rec_mail = os.environ['RecEmail']
     
     def send_email(self, send_to, subject, email_body, file_paths = None):
         msg = MIMEMultipart()
