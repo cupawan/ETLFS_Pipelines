@@ -40,4 +40,4 @@ class SendEmail:
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             server.login(self.bulletin_email, self.bulletin_email_pw)
-            server.sendmail(self.bulletin_email, self.rec_mail, msg.as_string())
+            server.sendmail(self.bulletin_email, send_to, msg.as_string())

@@ -154,7 +154,7 @@
             "Type": "AWS::Serverless::Function",
             "Properties": {
                 "FunctionName": {
-                    "Fn::Sub": "${ApplicationName}-${SourceName}-statistics-${Env}"
+                    "Fn::Sub": "${ApplicationName}-${SourceName}-${Env}"
                 },
                 "Description": "Lambda Function to pull statistics from Garmin API",
                 "Runtime": "python3.12",
