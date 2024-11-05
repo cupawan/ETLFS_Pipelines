@@ -41,3 +41,4 @@ class SendEmail:
             server.starttls()
             server.login(self.bulletin_email, self.bulletin_email_pw)
             server.sendmail(self.bulletin_email, send_to, msg.as_string())
+            return {'Status': 'Success'}

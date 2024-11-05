@@ -21,5 +21,5 @@ def lambda_handler(event,context):
                                                             name = contact['Name'],
                                                             location = contact['Location'])                                    
             send = email_.send_email(send_to=contact['Email'], subject="Today's Weather Forecast", email_body = message_table)            
-            logger.info(f"Email {send['status']} to {contact['Name']}")
+            logger.info(f"Email {send['Status']} to {contact['Name']}")
         
