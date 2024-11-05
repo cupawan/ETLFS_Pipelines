@@ -1,8 +1,9 @@
 import datetime
+import pytz
 
 class CommonUtils:
     def __init__(self):
-        pass
+        self.ist = pytz.timezone('Asia/Kolkata')
     
     def seconds_to_hm(self, n_seconds):
         hours = n_seconds // 3600
