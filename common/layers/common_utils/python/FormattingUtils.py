@@ -1,5 +1,3 @@
-from DatetimeUtils import CommonUtils
-
 class Formatter:
     def __init__(self):
         pass
@@ -84,7 +82,6 @@ class Formatter:
             </tr>
         </table>
         """
-
     def running_text(self, running_data, metadata):
         return f"""
 Running ({running_data['formatted_date']})
@@ -173,6 +170,164 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 <tr><th>Blood Oxygen (SpO2)</th><td>{body_stats_data['Blood Oxygen (SpO2)']}</td></tr>
             </table>
             """
+
+    def garminSleepFormatterForTelegram(self, d) -> str:
+        try:
+            summary_message = summary_message = (
+                f"""{d['formatted_date']}\n\nSleep Statistics\nYou slept for {d['total_time']}, from {d['from_']} to {d['to_']}\nScore: {d['sleep_score']} ({d['quality']})\n\nREM Sleep: {d['REM_Quality']}\n\t\t\t\t{d['REM_Time']}\n\t\t\t\tScore: {d['REM_Score']} [Optimal: ({d['REM_Optimal']})\n\nLight Sleep: {d['Light_Quality']}\n\t\t\t\t{d['Light_Time']}\n\t\t\t\tScore: {d['Light_Score']} [Optimal: ({d['Light_Optimal']})]\n\nDeep Sleep: {d['Deep_Quality']}\n\t\t\t\t{d['Deep_Time']}\n\t\t\t\tScore: {d['Deep_Score']} [Optimal: ({d['Deep_Optimal']})]\n\nAwake: {d['Awake_Quality']}\n\t\t\t\t{d['Awake_Time']}\n\t\t\t\tScore: {d['Awake_Score']} [Optimal: ({d['Awake_Optimal']})]\n\nAverage Sleep Stress: {d["Average_Sleep_Stress"]}\nBody Battery Change: {d['Body Battery Change']}\nResting Heart Rate: {d['Resting Heart Rate']}\nRestlessness Level: {d['Restlessness Level']}\nRestless moments: {d['Restless moments']}\nSleep Feedback: {d["Sleep Feedback"]}"""
+            )
+        except Exception as e:
+            summary_message = f"No Sleep Data in Garmin: {e}"
+            print(summary_message)
+        return summary_message
+
+    def garminMainEmailFormatter(
+        self, running_html, sleep_html, body_stats_html, metadata
+    ):
+        html_content = f"""
+            <html>
+            <head>
+                    <style>
+            body {{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #242424;
+                color: #d1d1d1;
+                padding: 20px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }}
+            .header {{
+                display: flex;
+                align-items: center;
+                margin-bottom: 30px;
+            }}
+            .profile-img {{
+                border-radius: 50%;
+                margin-right: 20px;
+                border: 3px solid #444;
+                width: 80px;
+                height: 80px;
+            }}
+            .summary {{
+                background-color: #242424;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                margin-bottom: 30px;
+                border: 1px solid #444;
+                color: #d1d1d1;
+            }}
+            .summary span {{
+                font-weight: bold;
+                color: #00bfa5;
+            }}
+            .data-table {{
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px;
+            }}
+            th, td{{
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #444;
+                color: #cfd8dc;
+            }}
+            th {{
+                background-color: #333;
+                color: #00bfa5;
+                font-size: 1.1em;
+                letter-spacing: 0.5px;
+            }}
+            td {{
+                background-color: #202020;
+                font-size: 0.95em;
+            }}
+            .section-title {{
+                font-size: 1.6em;
+                margin-bottom: 15px;
+                color: #00bfa5;
+                font-weight: bold;
+                letter-spacing: 0.5px;
+            }}
+            .footer {{
+                text-align: center;
+                color: #888;
+                font-size: 0.85em;
+                padding: 15px;
+                border-top: 1px solid #444;
+                margin-top: 30px;
+            }}
+            .footer img {{
+                max-width: 100%;
+                height: auto;
+                margin-top: 15px;
+            }}
+            a {{
+                color: #00bfa5;
+                text-decoration: none;
+            }}
+            a:hover {{
+                text-decoration: underline;
+            }}
+            button {{
+                background-color: #00bfa5;
+                color: #181818;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                transition: background-color 0.3s ease;
+            }}
+            button:hover {{
+                background-color: #009688;
+            }}
+            .additional-details p {{
+                font-size: 0.9em;
+                color: #b0bec5;
+                margin-bottom: 10px;
+            }}
+            /* Animation for hover effects */
+            th, td {{
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }}
+            tr:hover td {{
+                background-color: #333;
+                color: #fff;
+            }}
+        </style>
+
+            </head>
+            <body>
+                <div class="header">
+                    <img src="{metadata['profile_image']}" class="profile-img" width="100" height="100">
+                    <div>
+                        <h1>Garmin Statistics</h1>
+                        <p><b>{metadata['user_name']}</b></p>
+                    </div>
+                </div>
+
+                <div class="summary">
+                {running_html}
+                {sleep_html}
+                {body_stats_html}
+                <div class="footer">
+            <p></p>
+            <img src="{metadata['device_image']}" class="profile-img" width="15" height="15">
+            <p>Uploaded From: <b>{metadata['device_name']}</b></p>
+        </div>
+    </body>
+    </html>
+    """
+        return html_content
+
+    def garminBodystatsFormatterForTelegram(self, d):
+        try:
+            summary_message = f"""Body Statistics for {d['formatted_date']}:\n\nTotal kcal: {d['Total kcal']}\nActive kcal: {d['Active kcal']}\nTotal Steps / Goal: {d['Total Steps / Goal']}\nDistance: {d['Distance']}\nHighly Active Duration: {d['Highly Active Duration']}\nActive Duration: {d['Active Duration']}\nSedentary Duration: {d['Sedentary Duration']}\nModerate Intensity Minutes: {d['Moderate Intensity Minutes']}\nVigorous Intensity Minutes: {d['Vigorous Intensity Minutes']}\nIntensity Minutes Goal Status: {d['Intensity Minutes Goal Status']}\nFloors Up: {d['Floors Up']}\nFloors Down: {d['Floors Down']}\nHeart Rate - Min/Resting/Max: {d['Heart Rate - Min/Resting/Max']}\nLast 7 Days Avg Resting Heart Rate: {d['Last Seven Days Avg Resting Heart Rate']}\nAverage Stress: {d['Average Stress']}\nMax Stress Level: {d['Max Stress Level']}\nStress Duration: {d['Stress Duration']}\nBlood Oxygen (SpO2): {d['Blood Oxygen (SpO2)']}"""
+        except Exception as e:
+            summary_message = f"No Body Data in Garmin: {e}"
+            print(summary_message)
+        return summary_message
 
     def newsletterEmailFormatterHtml(self, sleep_data, body_stats_data):
         try:
@@ -414,82 +569,3 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             message = f"<p>No Data Available: {e}</p>"
             print(message)
         return message
-
-    def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
-        html_content = '''<html>
-        <head>
-        <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f8ff; }
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
-        .weather-card { border: 1px solid #ccc; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
-        .weather-header { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .weather-details { margin-left: 15px; }
-        .weather-details p { margin: 5px 0; }
-        .weather-details ul { list-style-type: none; padding: 0; }
-        .weather-details ul li { margin-bottom: 5px; }
-        .summary { color: #1e90ff; font-weight: bold; }
-        .temp { color: #2e8b57; }
-        .sunrise-sunset { color: #ffa500; }
-        .wind { color: #4682b4; }
-        .uv-index { color: #ff6347; }
-        .greeting { background-color: #1e90ff; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:nth-child(odd) { background-color: #fff; }
-        </style>
-        </head>
-        <body>
-        '''
-
-        html_content += f'''<div class="container">
-        <div class="greeting">
-        <h2 style="margin-top: 0;">Weather Report</h2>
-        <h3 style="margin-top: 0;">Good Morning, {str(name).title()}</h3>
-        <p>Weather Forecast for Today at<br><b>{str(location).title()}</b></p>
-        </div>
-        '''
-
-        html_content += '<div class="weather-card">\n'
-        html_content += f'<div class="weather-header">{CommonUtils().timestamp_to_date(data_list["dt"])}</div>\n'
-        html_content += '<div class="weather-details">\n'
-        html_content += f'<p class="summary">Summary: {data_list["summary"]}</p>\n'
-        html_content += '<table>\n'
-        html_content += '<tr><th>Sunrise</th><th>Sunset</th><th>Temp Day</th><th>Temp Night</th><th>Feels Like Day</th><th>Feels Like Night</th><th>Humidity</th><th>Wind</th><th>UV Index</th></tr>\n'
-        html_content += f'<tr><td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunrise"])}</td>'
-        html_content += f'<td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunset"])}</td>'
-        html_content += f'<td class="temp">{data_list["temp"]["day"]} °C</td>'
-        html_content += f'<td class="temp">{data_list["temp"]["night"]} °C</td>'
-        html_content += f'<td class="temp">{data_list["feels_like"]["day"]} °C</td>'
-        html_content += f'<td class="temp">{data_list["feels_like"]["night"]} °C</td>'
-        html_content += f'<td>{data_list["humidity"]} %</td>'
-        html_content += f'<td class="wind">{data_list["wind_speed"]} m/s, {data_list["wind_deg"]}°</td>'
-        html_content += f'<td class="uv-index">{data_list["uvi"]}</td></tr>\n'
-        html_content += '</table>\n'
-        html_content += '</div>\n'
-        html_content += '</div>\n'
-
-        html_content += '<div class="weather-card">\n'
-        html_content += '<div class="weather-header">Hourly Forecast For Next 24 Hours</div>\n'
-        html_content += '<div class="weather-details">\n'
-        html_content += '<table>\n'
-        html_content += '<tr><th>Time</th><th>Summary</th><th>Temp</th><th>Feels Like</th><th>Humidity</th><th>Wind</th><th>UV Index</th><th>Clouds (% of sky)</th></tr>\n'
-        for hour in day_list:
-            html_content += f'<tr><td>{CommonUtils().timestamp_to_time(hour["dt"])}</td>'
-            html_content += f'<td class="summary">{hour["weather"][0]["description"].title()}</td>'
-            html_content += f'<td class="temp">{hour["temp"]} °C</td>'
-            html_content += f'<td class="temp">{hour["feels_like"]} °C</td>'
-            html_content += f'<td>{hour["humidity"]} %</td>'
-            html_content += f'<td class="wind">{hour["wind_speed"]} m/s, {hour["wind_deg"]}°</td>'
-            html_content += f'<td class="uv-index">{hour["uvi"]}</td>'
-            html_content += f'<td class="uv-index">{hour["clouds"]}%</td></tr>\n'
-        html_content += '</table>\n'
-        html_content += '</div>\n'
-        html_content += '</div>\n'
-
-        html_content += '''<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>'''
-        html_content += '</div>\n'
-        html_content += '</body>\n</html>'
-
-        return html_content
