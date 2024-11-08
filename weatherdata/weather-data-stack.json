@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Transform": "AWS::Serverless-2016-10-31",
-    "Description": "Template for OpenWeatherMap Pipeline",
+    "Description": "CloudFormation template for deploying and managing resources for OpenWeatherMap API integration.",
     "Parameters": {
         "WeatherSourceName": {
             "Description": "API Name",
@@ -53,38 +53,12 @@
         },
         "CommonLayerArn": {
             "Type": "String"
+        },
+        "CommonLambdaRoleArn": {
+            "Type": "String"
         }
     },
     "Resources": {
-        "LambdaRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "RoleName": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambdaIam${Env}"
-                },
-                "AssumeRolePolicyDocument": {
-                    "Statement": [
-                        {
-                            "Action": [
-                                "sts:AssumeRole"
-                            ],
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "lambda.amazonaws.com"
-                                ]
-                            }
-                        }
-                    ],
-                    "Version": "2012-10-17"
-                },
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/AWSLambdaExecute",
-                    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-                ],
-                "Path": "/"
-            }
-        },
         "LambdaLibsLayer": {
             "Type": "AWS::Serverless::LayerVersion",
             "Properties": {
@@ -121,56 +95,53 @@
                 "FunctionName": {
                     "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-${Env}"
                 },
-                "Description": "Lambda Function to pull Weather Info from OpenWeatherMap API",
+                "Description": "Lambda Function to Pull Weather Information from OpenWeatherMap API",
                 "Runtime": "python3.12",
                 "CodeUri": "lambda",
                 "Handler": "lambda_function.lambda_handler",
                 "MemorySize": 128,
                 "Timeout": 300,
                 "Role": {
-                    "Fn::GetAtt": [
-                        "LambdaRole",
-                        "Arn"
-                    ]
+                    "Ref": "CommonLambdaRoleArn"
                 },
                 "Environment": {
                     "Variables": {
-                       "WeatherSourceName": {
-                        "Ref": "WeatherSourceName"
-                    },
-                    "ApplicationName": {
-                        "Ref": "ApplicationName"
-                    },
-                    "Env": {
-                        "Ref": "Env"
-                    },
-                    "TelegramBotToken": {
-                        "Ref": "TelegramBotToken"
-                    },
-                    "TelegramChatId": {
-                        "Ref": "TelegramChatId"
-                    },
-                    "MongodbConnectionString": {
-                        "Ref": "MongodbConnectionString"
-                    },
-                    "MongodbDatabase": {
-                        "Ref": "MongodbDatabase"
-                    },
-                    "BulletinEmailAddress": {
-                        "Ref": "BulletinEmailAddress"
-                    },
-                    "BulletEmailAddressAppPassword": {
-                        "Ref": "BulletEmailAddressAppPassword"
-                    },
-                    "OWMApiKey": {
-                        "Ref": "OWMApiKey"
-                    },
-                    "OWMGeocodeBaseUrl": {
-                        "Ref": "OWMGeocodeBaseUrl"
-                    },
-                    "OWMCurrentWeatherBaseUrl": {
-                        "Ref": "OWMCurrentWeatherBaseUrl"
-                    }
+                        "WeatherSourceName": {
+                            "Ref": "WeatherSourceName"
+                        },
+                        "ApplicationName": {
+                            "Ref": "ApplicationName"
+                        },
+                        "Env": {
+                            "Ref": "Env"
+                        },
+                        "TelegramBotToken": {
+                            "Ref": "TelegramBotToken"
+                        },
+                        "TelegramChatId": {
+                            "Ref": "TelegramChatId"
+                        },
+                        "MongodbConnectionString": {
+                            "Ref": "MongodbConnectionString"
+                        },
+                        "MongodbDatabase": {
+                            "Ref": "MongodbDatabase"
+                        },
+                        "BulletinEmailAddress": {
+                            "Ref": "BulletinEmailAddress"
+                        },
+                        "BulletEmailAddressAppPassword": {
+                            "Ref": "BulletEmailAddressAppPassword"
+                        },
+                        "OWMApiKey": {
+                            "Ref": "OWMApiKey"
+                        },
+                        "OWMGeocodeBaseUrl": {
+                            "Ref": "OWMGeocodeBaseUrl"
+                        },
+                        "OWMCurrentWeatherBaseUrl": {
+                            "Ref": "OWMCurrentWeatherBaseUrl"
+                        }
                     }
                 },
                 "Layers": [
@@ -190,11 +161,7 @@
                         "Fn::Sub": "${CommonLayerArn}"
                     }
                 ]
-            },
-            "DependsOn": [
-                "LambdaRole",
-                "LambdaLibsLayer"
-            ]
+            }
         },
         "ScheduledRule": {
             "Type": "AWS::Events::Rule",
@@ -202,7 +169,7 @@
                 "Name": {
                     "Fn::Sub": "${ApplicationName}${WeatherSourceName}EventRule${Env}"
                 },
-                "Description": "ScheduledRule",
+                "Description": "Triggers the event at 6:00 AM IST every day",
                 "ScheduleExpression": "cron(30 0 * * ? *)",
                 "State": "ENABLED",
                 "Targets": [
@@ -235,84 +202,6 @@
                 }
             },
             "DependsOn": "LambdaFunction"
-        },
-        "LambdaRolePolicies": {
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-                "PolicyName": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambdaPolicy${Env}"
-                },
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Sid": "BasePermissions",
-                            "Effect": "Allow",
-                            "Action": [
-                                "secretsmanager:*",
-                                "cloudformation:CreateChangeSet",
-                                "cloudformation:DescribeChangeSet",
-                                "cloudformation:DescribeStackResource",
-                                "cloudformation:DescribeStacks",
-                                "cloudformation:ExecuteChangeSet",
-                                "docdb-elastic:GetCluster",
-                                "docdb-elastic:ListClusters",
-                                "ec2:DescribeSecurityGroups",
-                                "ec2:DescribeSubnets",
-                                "ec2:DescribeVpcs",
-                                "kms:DescribeKey",
-                                "kms:ListAliases",
-                                "kms:ListKeys",
-                                "lambda:ListFunctions",
-                                "rds:DescribeDBClusters",
-                                "rds:DescribeDBInstances",
-                                "redshift:DescribeClusters",
-                                "redshift-serverless:ListWorkgroups",
-                                "redshift-serverless:GetNamespace",
-                                "tag:GetResources"
-                            ],
-                            "Resource": "*"
-                        },
-                        {
-                            "Sid": "LambdaPermissions",
-                            "Effect": "Allow",
-                            "Action": [
-                                "lambda:AddPermission",
-                                "lambda:CreateFunction",
-                                "lambda:GetFunction",
-                                "lambda:InvokeFunction",
-                                "lambda:UpdateFunctionConfiguration"
-                            ],
-                            "Resource": "arn:aws:lambda:*:*:function:SecretsManager*"
-                        },
-                        {
-                            "Sid": "SARPermissions",
-                            "Effect": "Allow",
-                            "Action": [
-                                "serverlessrepo:CreateCloudFormationChangeSet",
-                                "serverlessrepo:GetApplication"
-                            ],
-                            "Resource": "arn:aws:serverlessrepo:*:*:applications/SecretsManager*"
-                        },
-                        {
-                            "Sid": "S3Permissions",
-                            "Effect": "Allow",
-                            "Action": [
-                                "s3:GetObject"
-                            ],
-                            "Resource": [
-                                "arn:aws:s3:::awsserverlessrepo-changesets*",
-                                "arn:aws:s3:::secrets-manager-rotation-apps-*/*"
-                            ]
-                        }
-                    ]
-                },
-                "Roles": [
-                    {
-                        "Ref": "LambdaRole"
-                    }
-                ]
-            }
         }
     }
 }

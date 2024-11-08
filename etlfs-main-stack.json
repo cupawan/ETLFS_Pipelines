@@ -97,6 +97,42 @@
         "OWMCurrentWeatherBaseUrl": {
             "Type": "String",
             "NoEcho": "true"
+        },
+        "StSourceName": {
+            "Type": "String",
+            "Description": "API Name"
+        },
+        "StravaClientId": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaRedirectUri": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaActivitiesUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaAuthUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaClientSecret": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaRefreshToken": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaTokenUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaAccessToken": {
+            "Type": "String",
+            "NoEcho": "true"
         }
     },
     "Resources": {
@@ -180,7 +216,13 @@
                         "Ref": "GoogleMapsApiPath"
                     },
                     "CommonLayerArn": {
-                        "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
+                        "Fn::GetAtt": [
+                            "CommonStack",
+                            "Outputs.CommonLayerArn"
+                        ]
+                    },
+                    "CommonLambdaRoleArn": {
+                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
                     }
                 }
             }
@@ -227,7 +269,72 @@
                         "Ref": "OWMCurrentWeatherBaseUrl"
                     },
                     "CommonLayerArn": {
-                        "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
+                        "Fn::GetAtt": [
+                            "CommonStack",
+                            "Outputs.CommonLayerArn"
+                        ]
+                    },
+                    "CommonLambdaRoleArn": {
+                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+                    }
+                }
+            }
+        },
+        "StravaStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": "./stravarunning/strava-stack.json",
+                "Parameters": {
+                    "StSourceName": {
+                        "Ref": "StSourceName"
+                    },
+                    "ApplicationName": {
+                        "Ref": "ApplicationName"
+                    },
+                    "Env": {
+                        "Ref": "Env"
+                    },
+                    "StravaClientId": {
+                        "Ref": "StravaClientId"
+                    },
+                    "StravaRedirectUri": {
+                        "Ref": "StravaRedirectUri"
+                    },
+                    "StravaActivitiesUrl": {
+                        "Ref": "StravaActivitiesUrl"
+                    },
+                    "StravaAuthUrl": {
+                        "Ref": "StravaAuthUrl"
+                    },
+                    "StravaClientSecret": {
+                        "Ref": "StravaClientSecret"
+                    },
+                    "StravaRefreshToken": {
+                        "Ref": "StravaRefreshToken"
+                    },
+                    "StravaTokenUrl": {
+                        "Ref": "StravaTokenUrl"
+                    },
+                    "StravaAccessToken": {
+                        "Ref": "StravaAccessToken"
+                    },
+                    "BulletinEmailAddress": {
+                        "Ref": "BulletinEmailAddress"
+                    },
+                    "BulletEmailAddressAppPassword": {
+                        "Ref": "BulletEmailAddressAppPassword"
+                    },
+                    "RecEmail": {
+                        "Ref": "RecEmail"
+                    },
+                    "CommonLayerArn": {
+                        "Fn::GetAtt": [
+                            "CommonStack",
+                            "Outputs.CommonLayerArn"
+                        ]
+                    },
+                    "CommonLambdaRoleArn": {
+                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
                     }
                 }
             }

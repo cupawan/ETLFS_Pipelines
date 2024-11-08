@@ -1,3 +1,6 @@
+from datetime import datetime
+from DatetimeUtils import CommonUtils
+
 class Formatter:
     def __init__(self):
         pass
@@ -569,3 +572,260 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             message = f"<p>No Data Available: {e}</p>"
             print(message)
         return message
+    
+    def formatStravaActivityText(self, activity_data):
+        name = activity_data.get('name', 'Unnamed Activity')
+        distance = activity_data.get('distance', 0)
+        moving_time = activity_data.get('moving_time', 0)
+        start_date = activity_data.get('start_date_local', '')
+        average_speed = activity_data.get('average_speed', 0)
+        max_speed = activity_data.get('max_speed', 0)
+        average_heartrate = activity_data.get('average_heartrate', 0)
+        max_heartrate = activity_data.get('max_heartrate', 0)
+        cadence = 2 * (activity_data.get('average_cadence', 0))
+        
+        formatted_start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
+        
+        message = f"Activity: {name}\n" \
+                  f"Distance: {distance / 1000:.2f} km\n" \
+                  f"Moving Time: {CommonUtils().seconds_to_hm(moving_time)}\n" \
+                  f"Start Date: {formatted_start_date}\n" \
+                  f"Average Speed: {CommonUtils().convert_speed_mps_to_minkm(average_speed)}\n" \
+                  f"Max Speed: {CommonUtils().convert_speed_mps_to_minkm(max_speed)}\n" \
+                  f"Average Heartrate: {average_heartrate} BPM\n" \
+                  f"Max Heartrate: {max_heartrate} BPM\n" \
+                  f"Average Cadence: {cadence} SPM"
+        
+        return message
+
+    def formatStravaActivityHtml(self, activity_data):
+        name = activity_data.get('name', 'Unnamed Activity')
+        distance = activity_data.get('distance', 0)
+        moving_time = activity_data.get('moving_time', 0)
+        start_date = activity_data.get('start_date_local', '')
+        average_speed = activity_data.get('average_speed', 0)
+        max_speed = activity_data.get('max_speed', 0)
+        average_heartrate = activity_data.get('average_heartrate', 0)
+        max_heartrate = activity_data.get('max_heartrate', 0)
+        cadence = 2 * (activity_data.get('average_cadence', 0))
+        
+        formatted_start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
+        
+        message = f'''
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    margin: 0;
+                    padding: 0;
+                }}
+                .container {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    padding: 20px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    margin-top: 20px;
+                }}
+                .header {{
+                    background-color: #0073e6;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    border-radius: 8px 8px 0 0;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                .section {{
+                    margin-bottom: 30px;
+                }}
+                .section-title {{
+                    font-size: 1.4em;
+                    margin-bottom: 10px;
+                    color: #0073e6;
+                }}
+                .stats {{
+                    margin-bottom: 20px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
+                }}
+                .stats p {{
+                    margin: 5px 0;
+                }}
+                .footer {{
+                    text-align: center;
+                    color: #777;
+                    font-size: 0.9em;
+                    padding: 10px;
+                    border-top: 1px solid #ddd;
+                    margin-top: 20px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Strava Activity</h1>
+                </div>
+                <div class="content">
+                    <div class="section">
+                        <h2 class="section-title">Activity Details</h2>
+                        <div class="stats">
+                            <p><strong>Name:</strong> {name}</p>
+                            <p><strong>Distance:</strong> {distance / 1000:.2f} km</p>
+                            <p><strong>Moving Time:</strong> {CommonUtils().seconds_to_hm(moving_time)}</p>
+                            <p><strong>Start Date:</strong> {formatted_start_date}</p>
+                            <p><strong>Average Speed:</strong> {CommonUtils().convert_speed_mps_to_minkm(average_speed)}</p>
+                            <p><strong>Max Speed:</strong> {CommonUtils().convert_speed_mps_to_minkm(max_speed)}</p>
+                            <p><strong>Average Heartrate:</strong> {average_heartrate} BPM</p>
+                            <p><strong>Max Heartrate:</strong> {max_heartrate} BPM</p>
+                            <p><strong>Average Cadence:</strong> {cadence} SPM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Have a great day!</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        '''
+        return message
+    
+    def formatStravaActivityHtml2(self,activity_data):
+        name = activity_data.get('name', 'Unnamed Activity')
+        distance = activity_data.get('distance', 0)
+        moving_time = activity_data.get('moving_time', 0)
+        start_date = activity_data.get('start_date_local', '')
+        average_speed = activity_data.get('average_speed', 0)
+        max_speed = activity_data.get('max_speed', 0)
+        average_heartrate = activity_data.get('average_heartrate', 0)
+        max_heartrate = activity_data.get('max_heartrate', 0)
+        cadence = 2 * (activity_data.get('average_cadence', 0))
+        average_temp = activity_data.get('average_temp', 0)
+        calories = activity_data.get('kilojoules', 0)        
+        formatted_start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")        
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity Summary</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    padding: 20px;
+                }}
+                .container {{
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }}
+                .header {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                    padding: 10px;
+                    text-align: center;
+                    font-size: 24px;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }}
+                th {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                }}
+                .highlight {{
+                    font-weight: bold;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src = "https://img.icons8.com/color/128/running.png">
+                    Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
+                </div>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th colspan="2">Activity Details</th>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Activity Name:</td>
+                            <td>{name}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Distance:</td>
+                            <td>{distance / 1000:.2f} km</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Moving Time:</td>
+                            <td>{CommonUtils().seconds_to_hm(moving_time)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Start Date:</td>
+                            <td>{formatted_start_date}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Speed:</td>
+                            <td>{CommonUtils().convert_speed_mps_to_minkm(average_speed)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Max Speed:</td>
+                            <td>{CommonUtils().convert_speed_mps_to_minkm(max_speed)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Heartrate:</td>
+                            <td>{average_heartrate} BPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Max Heartrate:</td>
+                            <td>{max_heartrate} BPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Cadence:</td>
+                            <td>{cadence} SPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Temp:</td>
+                            <td>{average_temp} °C</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Calories:</td>
+                            <td>{calories}</td>
+                        </tr>
+                    </table>
+                    <p style="text-align: center; color: #888888;">This email was generated automatically.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        return html_content

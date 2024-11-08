@@ -35,12 +35,114 @@
                 },
                 "LicenseInfo": "MIT"
             }
+        },
+        "CommonLambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Fn::Sub": "${ApplicationName}commonlambdaiam${Env}"
+                },
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AWSLambdaExecute",
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+                ],
+                "Path": "/"
+            }
+        },
+        "CommonLambdaRolePolicies": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": {
+                    "Fn::Sub": "${ApplicationName}CommonLambdaRolePolicy${Env}"
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "BasePermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "secretsmanager:*",
+                                "cloudformation:CreateChangeSet",
+                                "cloudformation:DescribeChangeSet",
+                                "cloudformation:DescribeStackResource",
+                                "cloudformation:DescribeStacks",
+                                "cloudformation:ExecuteChangeSet",
+                                "lambda:ListFunctions",
+                                "tag:GetResources"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Sid": "LambdaPermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:AddPermission",
+                                "lambda:CreateFunction",
+                                "lambda:GetFunction",
+                                "lambda:InvokeFunction",
+                                "lambda:UpdateFunctionConfiguration"
+                            ],
+                            "Resource": {
+                                "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ApplicationName}*"
+                            }
+                        },
+                        {
+                            "Sid": "SARPermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "serverlessrepo:CreateCloudFormationChangeSet",
+                                "serverlessrepo:GetApplication"
+                            ],
+                            "Resource": "arn:aws:serverlessrepo:*:*:applications/SecretsManager*"
+                        },
+                        {
+                            "Sid": "S3Permissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Sub": "arn:aws:s3:::${CommonS3Bucket}/*"
+                                  }
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "CommonLambdaRole"
+                    }
+                ]
+            }
         }
     },
     "Outputs": {
         "CommonLayerArn": {
             "Description": "ARN of the Common Lambda Layer",
             "Value": { "Ref": "CommonLambdaLayer" }
+        },
+        "CommonLambdaRole": {
+            "Description": "Name of the Common IAM Role",
+            "Value": { "Ref": "CommonLambdaRole" }
         }
+
     }
 }
