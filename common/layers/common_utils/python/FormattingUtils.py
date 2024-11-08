@@ -1,6 +1,7 @@
 from datetime import datetime
 from DatetimeUtils import CommonUtils
 
+
 class Formatter:
     def __init__(self):
         pass
@@ -85,6 +86,7 @@ class Formatter:
             </tr>
         </table>
         """
+
     def running_text(self, running_data, metadata):
         return f"""
 Running ({running_data['formatted_date']})
@@ -132,7 +134,7 @@ Shoes: {metadata['gear']}
                  <tr><td>Restlessness Level</td> <td>{sleep_data['Restlessness Level']}</td></tr>
             </table>
             """
-    
+
     def sleep_text(self, sleep_data):
         return f"""
 Sleep ({sleep_data['formatted_date']})
@@ -572,46 +574,52 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             message = f"<p>No Data Available: {e}</p>"
             print(message)
         return message
-    
+
     def formatStravaActivityText(self, activity_data):
-        name = activity_data.get('name', 'Unnamed Activity')
-        distance = activity_data.get('distance', 0)
-        moving_time = activity_data.get('moving_time', 0)
-        start_date = activity_data.get('start_date_local', '')
-        average_speed = activity_data.get('average_speed', 0)
-        max_speed = activity_data.get('max_speed', 0)
-        average_heartrate = activity_data.get('average_heartrate', 0)
-        max_heartrate = activity_data.get('max_heartrate', 0)
-        cadence = 2 * (activity_data.get('average_cadence', 0))
-        
-        formatted_start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
-        
-        message = f"Activity: {name}\n" \
-                  f"Distance: {distance / 1000:.2f} km\n" \
-                  f"Moving Time: {CommonUtils().seconds_to_hm(moving_time)}\n" \
-                  f"Start Date: {formatted_start_date}\n" \
-                  f"Average Speed: {CommonUtils().convert_speed_mps_to_minkm(average_speed)}\n" \
-                  f"Max Speed: {CommonUtils().convert_speed_mps_to_minkm(max_speed)}\n" \
-                  f"Average Heartrate: {average_heartrate} BPM\n" \
-                  f"Max Heartrate: {max_heartrate} BPM\n" \
-                  f"Average Cadence: {cadence} SPM"
-        
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+
+        formatted_start_date = datetime.datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
+
+        message = (
+            f"Activity: {name}\n"
+            f"Distance: {distance / 1000:.2f} km\n"
+            f"Moving Time: {CommonUtils().seconds_to_hm(moving_time)}\n"
+            f"Start Date: {formatted_start_date}\n"
+            f"Average Speed: {CommonUtils().convert_speed_mps_to_minkm(average_speed)}\n"
+            f"Max Speed: {CommonUtils().convert_speed_mps_to_minkm(max_speed)}\n"
+            f"Average Heartrate: {average_heartrate} BPM\n"
+            f"Max Heartrate: {max_heartrate} BPM\n"
+            f"Average Cadence: {cadence} SPM"
+        )
+
         return message
 
     def formatStravaActivityHtml(self, activity_data):
-        name = activity_data.get('name', 'Unnamed Activity')
-        distance = activity_data.get('distance', 0)
-        moving_time = activity_data.get('moving_time', 0)
-        start_date = activity_data.get('start_date_local', '')
-        average_speed = activity_data.get('average_speed', 0)
-        max_speed = activity_data.get('max_speed', 0)
-        average_heartrate = activity_data.get('average_heartrate', 0)
-        max_heartrate = activity_data.get('max_heartrate', 0)
-        cadence = 2 * (activity_data.get('average_cadence', 0))
-        
-        formatted_start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
-        
-        message = f'''
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+
+        formatted_start_date = datetime.datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
+
+        message = f"""
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -699,22 +707,24 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             </div>
         </body>
         </html>
-        '''
+        """
         return message
-    
-    def formatStravaActivityHtml2(self,activity_data):
-        name = activity_data.get('name', 'Unnamed Activity')
-        distance = activity_data.get('distance', 0)
-        moving_time = activity_data.get('moving_time', 0)
-        start_date = activity_data.get('start_date_local', '')
-        average_speed = activity_data.get('average_speed', 0)
-        max_speed = activity_data.get('max_speed', 0)
-        average_heartrate = activity_data.get('average_heartrate', 0)
-        max_heartrate = activity_data.get('max_heartrate', 0)
-        cadence = 2 * (activity_data.get('average_cadence', 0))
-        average_temp = activity_data.get('average_temp', 0)
-        calories = activity_data.get('kilojoules', 0)        
-        formatted_start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")        
+
+    def formatStravaActivityHtml2(self, activity_data):
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+        average_temp = activity_data.get("average_temp", 0)
+        calories = activity_data.get("kilojoules", 0)
+        formatted_start_date = datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
         html_content = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -768,8 +778,10 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         <body>
             <div class="container">
                 <div class="header">
-                    <img src = "https://img.icons8.com/color/128/running.png">
-                    Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-strava" viewBox="0 0 16 16">
+                <path d="M6.731 0 2 9.125h2.788L6.73 5.497l1.93 3.628h2.766zm4.694 9.125-1.372 2.756L8.66 9.125H6.547L10.053 16l3.484-6.875z"/>
+                </svg>
+                Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
                 </div>
                 <div class="content">
                     <table>
@@ -827,5 +839,5 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         </body>
         </html>
         """
-        
+
         return html_content
