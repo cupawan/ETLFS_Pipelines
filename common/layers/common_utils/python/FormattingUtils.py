@@ -778,9 +778,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         <body>
             <div class="container">
                 <div class="header">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-strava" viewBox="0 0 16 16">
-                <path d="M6.731 0 2 9.125h2.788L6.73 5.497l1.93 3.628h2.766zm4.694 9.125-1.372 2.756L8.66 9.125H6.547L10.053 16l3.484-6.875z"/>
-                </svg>
+                <img src = "https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-c33577e7257d5ac4a2e972564c5c7556037f3d005c5b5cb2f0e0d06ac7b84c47.svg" height = "100" width = "100">
                 Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
                 </div>
                 <div class="content">

@@ -1,343 +1,334 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Parent Stack for ETLFS Pipelines",
-    "Parameters": {
-        "SourceName": {
-            "Type": "String",
-            "Description": "API Name"
-        },
-        "ApplicationName": {
-            "Type": "String",
-            "Description": "Application Name"
-        },
-        "Env": {
-            "Type": "String",
-            "Description": "Environment"
-        },
-        "TelegramBotToken": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TelegramChatId": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "MyGarminPassword": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "MyEmailAddress": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "AwsAccessKey": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "AwsSecretAccessKey": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "AwsS3BucketName": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "AwsS3LambdaFolderKey": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "AwsS3LambdaGarminFilename": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "MongodbConnectionString": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "MongodbDatabase": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "BulletinEmailAddress": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "BulletEmailAddressAppPassword": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "RecEmail": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "RunningMapPath": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "GoogleApiKey": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "GoogleMapsApiPath": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "WeatherSourceName": {
-            "Type": "String",
-            "Description": "API Name"
-        },
-        "OWMApiKey": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "OWMGeocodeBaseUrl": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "OWMCurrentWeatherBaseUrl": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StSourceName": {
-            "Type": "String",
-            "Description": "API Name"
-        },
-        "StravaClientId": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaRedirectUri": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaActivitiesUrl": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaAuthUrl": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaClientSecret": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaRefreshToken": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaTokenUrl": {
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "StravaAccessToken": {
-            "Type": "String",
-            "NoEcho": "true"
-        }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Parent Stack for ETLFS Pipelines",
+  "Parameters": {
+    "SourceName": {
+      "Type": "String",
+      "Description": "API Name"
     },
-    "Resources": {
-        "CommonStack": {
-            "Type": "AWS::CloudFormation::Stack",
-            "Properties": {
-                "TemplateURL": "./common/etlfs-shared-stack.json",
-                "Parameters": {
-                    "ApplicationName": {
-                        "Ref": "ApplicationName"
-                    },
-                    "Env": {
-                        "Ref": "Env"
-                    }
-                }
-            }
-        },
-        "GarminStack": {
-            "Type": "AWS::CloudFormation::Stack",
-            "Properties": {
-                "TemplateURL": "./garminconnect/garmin-connect-stack.json",
-                "Parameters": {
-                    "SourceName": {
-                        "Ref": "SourceName"
-                    },
-                    "ApplicationName": {
-                        "Ref": "ApplicationName"
-                    },
-                    "Env": {
-                        "Ref": "Env"
-                    },
-                    "TelegramBotToken": {
-                        "Ref": "TelegramBotToken"
-                    },
-                    "TelegramChatId": {
-                        "Ref": "TelegramChatId"
-                    },
-                    "MyGarminPassword": {
-                        "Ref": "MyGarminPassword"
-                    },
-                    "MyEmailAddress": {
-                        "Ref": "MyEmailAddress"
-                    },
-                    "AwsAccessKey": {
-                        "Ref": "AwsAccessKey"
-                    },
-                    "AwsSecretAccessKey": {
-                        "Ref": "AwsSecretAccessKey"
-                    },
-                    "AwsS3BucketName": {
-                        "Ref": "AwsS3BucketName"
-                    },
-                    "AwsS3LambdaFolderKey": {
-                        "Ref": "AwsS3LambdaFolderKey"
-                    },
-                    "AwsS3LambdaGarminFilename": {
-                        "Ref": "AwsS3LambdaGarminFilename"
-                    },
-                    "MongodbConnectionString": {
-                        "Ref": "MongodbConnectionString"
-                    },
-                    "MongodbDatabase": {
-                        "Ref": "MongodbDatabase"
-                    },
-                    "BulletinEmailAddress": {
-                        "Ref": "BulletinEmailAddress"
-                    },
-                    "BulletEmailAddressAppPassword": {
-                        "Ref": "BulletEmailAddressAppPassword"
-                    },
-                    "RecEmail": {
-                        "Ref": "RecEmail"
-                    },
-                    "RunningMapPath": {
-                        "Ref": "RunningMapPath"
-                    },
-                    "GoogleApiKey": {
-                        "Ref": "GoogleApiKey"
-                    },
-                    "GoogleMapsApiPath": {
-                        "Ref": "GoogleMapsApiPath"
-                    },
-                    "CommonLayerArn": {
-                        "Fn::GetAtt": [
-                            "CommonStack",
-                            "Outputs.CommonLayerArn"
-                        ]
-                    },
-                    "CommonLambdaRoleArn": {
-                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
-                    }
-                }
-            }
-        },
-        "OWMStack": {
-            "Type": "AWS::CloudFormation::Stack",
-            "Properties": {
-                "TemplateURL": "./weatherdata/weather-data-stack.json",
-                "Parameters": {
-                    "WeatherSourceName": {
-                        "Ref": "WeatherSourceName"
-                    },
-                    "ApplicationName": {
-                        "Ref": "ApplicationName"
-                    },
-                    "Env": {
-                        "Ref": "Env"
-                    },
-                    "TelegramBotToken": {
-                        "Ref": "TelegramBotToken"
-                    },
-                    "TelegramChatId": {
-                        "Ref": "TelegramChatId"
-                    },
-                    "MongodbConnectionString": {
-                        "Ref": "MongodbConnectionString"
-                    },
-                    "MongodbDatabase": {
-                        "Ref": "MongodbDatabase"
-                    },
-                    "BulletinEmailAddress": {
-                        "Ref": "BulletinEmailAddress"
-                    },
-                    "BulletEmailAddressAppPassword": {
-                        "Ref": "BulletEmailAddressAppPassword"
-                    },
-                    "OWMApiKey": {
-                        "Ref": "OWMApiKey"
-                    },
-                    "OWMGeocodeBaseUrl": {
-                        "Ref": "OWMGeocodeBaseUrl"
-                    },
-                    "OWMCurrentWeatherBaseUrl": {
-                        "Ref": "OWMCurrentWeatherBaseUrl"
-                    },
-                    "CommonLayerArn": {
-                        "Fn::GetAtt": [
-                            "CommonStack",
-                            "Outputs.CommonLayerArn"
-                        ]
-                    },
-                    "CommonLambdaRoleArn": {
-                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
-                    }
-                }
-            }
-        },
-        "StravaStack": {
-            "Type": "AWS::CloudFormation::Stack",
-            "Properties": {
-                "TemplateURL": "./stravarunning/strava-stack.json",
-                "Parameters": {
-                    "StSourceName": {
-                        "Ref": "StSourceName"
-                    },
-                    "ApplicationName": {
-                        "Ref": "ApplicationName"
-                    },
-                    "Env": {
-                        "Ref": "Env"
-                    },
-                    "StravaClientId": {
-                        "Ref": "StravaClientId"
-                    },
-                    "StravaRedirectUri": {
-                        "Ref": "StravaRedirectUri"
-                    },
-                    "StravaActivitiesUrl": {
-                        "Ref": "StravaActivitiesUrl"
-                    },
-                    "StravaAuthUrl": {
-                        "Ref": "StravaAuthUrl"
-                    },
-                    "StravaClientSecret": {
-                        "Ref": "StravaClientSecret"
-                    },
-                    "StravaRefreshToken": {
-                        "Ref": "StravaRefreshToken"
-                    },
-                    "StravaTokenUrl": {
-                        "Ref": "StravaTokenUrl"
-                    },
-                    "StravaAccessToken": {
-                        "Ref": "StravaAccessToken"
-                    },
-                    "BulletinEmailAddress": {
-                        "Ref": "BulletinEmailAddress"
-                    },
-                    "BulletEmailAddressAppPassword": {
-                        "Ref": "BulletEmailAddressAppPassword"
-                    },
-                    "RecEmail": {
-                        "Ref": "RecEmail"
-                    },
-                    "CommonLayerArn": {
-                        "Fn::GetAtt": [
-                            "CommonStack",
-                            "Outputs.CommonLayerArn"
-                        ]
-                    },
-                    "CommonLambdaRoleArn": {
-                        "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
-                    }
-                }
-            }
-        }
+    "ApplicationName": {
+      "Type": "String",
+      "Description": "Application Name"
+    },
+    "Env": {
+      "Type": "String",
+      "Description": "Environment"
+    },
+    "TelegramBotToken": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "TelegramChatId": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "MyGarminPassword": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "MyEmailAddress": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "AwsAccessKey": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "AwsSecretAccessKey": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "AwsS3BucketName": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "AwsS3LambdaFolderKey": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "AwsS3LambdaGarminFilename": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "MongodbConnectionString": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "MongodbDatabase": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "BulletinEmailAddress": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "BulletEmailAddressAppPassword": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "RecEmail": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "RunningMapPath": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "GoogleApiKey": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "GoogleMapsApiPath": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "WeatherSourceName": {
+      "Type": "String",
+      "Description": "API Name"
+    },
+    "OWMApiKey": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "OWMGeocodeBaseUrl": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "OWMCurrentWeatherBaseUrl": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StSourceName": {
+      "Type": "String",
+      "Description": "API Name"
+    },
+    "StravaClientId": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaRedirectUri": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaActivitiesUrl": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaAuthUrl": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaClientSecret": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaRefreshToken": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaTokenUrl": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "StravaAccessToken": {
+      "Type": "String",
+      "NoEcho": "true"
     }
+  },
+  "Resources": {
+    "CommonStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "./common/etlfs-shared-stack.json",
+        "Parameters": {
+          "ApplicationName": {
+            "Ref": "ApplicationName"
+          },
+          "Env": {
+            "Ref": "Env"
+          }
+        }
+      }
+    },
+    "GarminStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "./garminconnect/garmin-connect-stack.json",
+        "Parameters": {
+          "SourceName": {
+            "Ref": "SourceName"
+          },
+          "ApplicationName": {
+            "Ref": "ApplicationName"
+          },
+          "Env": {
+            "Ref": "Env"
+          },
+          "TelegramBotToken": {
+            "Ref": "TelegramBotToken"
+          },
+          "TelegramChatId": {
+            "Ref": "TelegramChatId"
+          },
+          "MyGarminPassword": {
+            "Ref": "MyGarminPassword"
+          },
+          "MyEmailAddress": {
+            "Ref": "MyEmailAddress"
+          },
+          "AwsAccessKey": {
+            "Ref": "AwsAccessKey"
+          },
+          "AwsSecretAccessKey": {
+            "Ref": "AwsSecretAccessKey"
+          },
+          "AwsS3BucketName": {
+            "Ref": "AwsS3BucketName"
+          },
+          "AwsS3LambdaFolderKey": {
+            "Ref": "AwsS3LambdaFolderKey"
+          },
+          "AwsS3LambdaGarminFilename": {
+            "Ref": "AwsS3LambdaGarminFilename"
+          },
+          "MongodbConnectionString": {
+            "Ref": "MongodbConnectionString"
+          },
+          "MongodbDatabase": {
+            "Ref": "MongodbDatabase"
+          },
+          "BulletinEmailAddress": {
+            "Ref": "BulletinEmailAddress"
+          },
+          "BulletEmailAddressAppPassword": {
+            "Ref": "BulletEmailAddressAppPassword"
+          },
+          "RecEmail": {
+            "Ref": "RecEmail"
+          },
+          "RunningMapPath": {
+            "Ref": "RunningMapPath"
+          },
+          "GoogleApiKey": {
+            "Ref": "GoogleApiKey"
+          },
+          "GoogleMapsApiPath": {
+            "Ref": "GoogleMapsApiPath"
+          },
+          "CommonLayerArn": {
+            "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
+          },
+          "CommonLambdaRoleArn": {
+            "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+          }
+        }
+      }
+    },
+    "OWMStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "./weatherdata/weather-data-stack.json",
+        "Parameters": {
+          "WeatherSourceName": {
+            "Ref": "WeatherSourceName"
+          },
+          "ApplicationName": {
+            "Ref": "ApplicationName"
+          },
+          "Env": {
+            "Ref": "Env"
+          },
+          "TelegramBotToken": {
+            "Ref": "TelegramBotToken"
+          },
+          "TelegramChatId": {
+            "Ref": "TelegramChatId"
+          },
+          "MongodbConnectionString": {
+            "Ref": "MongodbConnectionString"
+          },
+          "MongodbDatabase": {
+            "Ref": "MongodbDatabase"
+          },
+          "BulletinEmailAddress": {
+            "Ref": "BulletinEmailAddress"
+          },
+          "BulletEmailAddressAppPassword": {
+            "Ref": "BulletEmailAddressAppPassword"
+          },
+          "OWMApiKey": {
+            "Ref": "OWMApiKey"
+          },
+          "OWMGeocodeBaseUrl": {
+            "Ref": "OWMGeocodeBaseUrl"
+          },
+          "OWMCurrentWeatherBaseUrl": {
+            "Ref": "OWMCurrentWeatherBaseUrl"
+          },
+          "CommonLayerArn": {
+            "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
+          },
+          "CommonLambdaRoleArn": {
+            "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+          }
+        }
+      }
+    },
+    "StravaStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "./stravarunning/strava-stack.json",
+        "Parameters": {
+          "StSourceName": {
+            "Ref": "StSourceName"
+          },
+          "ApplicationName": {
+            "Ref": "ApplicationName"
+          },
+          "Env": {
+            "Ref": "Env"
+          },
+          "StravaClientId": {
+            "Ref": "StravaClientId"
+          },
+          "StravaRedirectUri": {
+            "Ref": "StravaRedirectUri"
+          },
+          "StravaActivitiesUrl": {
+            "Ref": "StravaActivitiesUrl"
+          },
+          "StravaAuthUrl": {
+            "Ref": "StravaAuthUrl"
+          },
+          "StravaClientSecret": {
+            "Ref": "StravaClientSecret"
+          },
+          "StravaRefreshToken": {
+            "Ref": "StravaRefreshToken"
+          },
+          "StravaTokenUrl": {
+            "Ref": "StravaTokenUrl"
+          },
+          "StravaAccessToken": {
+            "Ref": "StravaAccessToken"
+          },
+          "BulletinEmailAddress": {
+            "Ref": "BulletinEmailAddress"
+          },
+          "BulletEmailAddressAppPassword": {
+            "Ref": "BulletEmailAddressAppPassword"
+          },
+          "RecEmail": {
+            "Ref": "RecEmail"
+          },
+          "CommonLayerArn": {
+            "Fn::GetAtt": ["CommonStack", "Outputs.CommonLayerArn"]
+          },
+          "CommonLambdaRoleArn": {
+            "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+          }
+        }
+      }
+    }
+  }
 }
