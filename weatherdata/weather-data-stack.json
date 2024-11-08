@@ -69,7 +69,7 @@
                 "ContentUri": "layers/libs",
                 "Description": "Libraries for OpenWeatherMap Bulletin Lambda",
                 "LayerName": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambaLib${Env}"
+                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-lambda-lib-${Env}"
                 },
                 "LicenseInfo": "MIT"
             }
@@ -84,7 +84,7 @@
                 "ContentUri": "layers/helper_functions",
                 "Description": "Helper Modules for OpenWeatherMap Bulletin Lambda",
                 "LayerName": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}LambaModules${Env}"
+                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-lambda-modules-${Env}"
                 },
                 "LicenseInfo": "MIT"
             }
@@ -167,7 +167,7 @@
             "Type": "AWS::Events::Rule",
             "Properties": {
                 "Name": {
-                    "Fn::Sub": "${ApplicationName}${WeatherSourceName}EventRule${Env}"
+                    "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-eventrule-${Env}"
                 },
                 "Description": "Triggers the event at 6:00 AM IST every day",
                 "ScheduleExpression": "cron(30 0 * * ? *)",

@@ -101,7 +101,7 @@
                 "ContentUri": "layers/libs",
                 "Description": "Libraries for Garmin Statistics Lambda",
                 "LayerName": {
-                    "Fn::Sub": "${ApplicationName}${SourceName}LambaLib${Env}"
+                    "Fn::Sub": "${ApplicationName}-${SourceName}-lambda-lib-${Env}"
                 },
                 "LicenseInfo": "MIT"
             }
@@ -116,7 +116,7 @@
                 "ContentUri": "layers/helper_functions",
                 "Description": "Helper Modules for Garmin Statistics Lambda",
                 "LayerName": {
-                    "Fn::Sub": "${ApplicationName}${SourceName}LambaModules${Env}"
+                    "Fn::Sub": "${ApplicationName}-${SourceName}-lambda-modules-${Env}"
                 },
                 "LicenseInfo": "MIT"
             }
@@ -217,7 +217,7 @@
             "Type": "AWS::Events::Rule",
             "Properties": {
                 "Name": {
-                    "Fn::Sub": "${ApplicationName}${SourceName}EventRule${Env}"
+                    "Fn::Sub": "${ApplicationName}-${SourceName}-eventrule-${Env}"
                 },
                 "Description": "ScheduledRule",
                 "ScheduleExpression": "cron(30 3 * * ? *)",

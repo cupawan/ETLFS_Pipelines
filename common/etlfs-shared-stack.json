@@ -31,7 +31,7 @@
                 "ContentUri": "layers/common_utils",
                 "Description": "Common Modules for ETLFS Pipelines",
                 "LayerName": {
-                    "Fn::Sub": "${ApplicationName}CommonLayer${Env}"
+                    "Fn::Sub": "${ApplicationName}-common-lambda-layer-${Env}"
                 },
                 "LicenseInfo": "MIT"
             }
@@ -40,7 +40,7 @@
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "RoleName": {
-                    "Fn::Sub": "${ApplicationName}commonlambdaiam${Env}"
+                    "Fn::Sub": "${ApplicationName}-common-lambda-role-${Env}"
                 },
                 "AssumeRolePolicyDocument": {
                     "Statement": [
@@ -69,7 +69,7 @@
             "Type": "AWS::IAM::Policy",
             "Properties": {
                 "PolicyName": {
-                    "Fn::Sub": "${ApplicationName}CommonLambdaRolePolicy${Env}"
+                    "Fn::Sub": "${ApplicationName}-common-lambda-role-policy-${Env}"
                 },
                 "PolicyDocument": {
                     "Version": "2012-10-17",

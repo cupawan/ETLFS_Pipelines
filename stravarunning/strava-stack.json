@@ -1,0 +1,215 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Transform": "AWS::Serverless-2016-10-31",
+    "Description": "CloudFormation template for deploying and managing resources for Strava API integration.",
+    "Parameters": {
+        "StSourceName": {
+            "Description": "API Name",
+            "Type": "String"
+        },
+        "ApplicationName": {
+            "Description": "Application Name",
+            "Type": "String"
+        },
+        "Env": {
+            "Description": "Environment",
+            "Type": "String"
+        },
+        "StravaClientId": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaRedirectUri": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaActivitiesUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaAuthUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaClientSecret": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaRefreshToken": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaTokenUrl": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "StravaAccessToken": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletinEmailAddress": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "BulletEmailAddressAppPassword": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "RecEmail": {
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "CommonLayerArn": {
+            "Type": "String"
+        },
+        "CommonLambdaRoleArn": {
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "LambdaLibsLayer": {
+            "Type": "AWS::Serverless::LayerVersion",
+            "Properties": {
+                "CompatibleRuntimes": [
+                    "python3.12",
+                    "python3.11"
+                ],
+                "ContentUri": "layers/libs",
+                "Description": "Libraries for Strava Running Lambda",
+                "LayerName": {
+                    "Fn::Sub": "${ApplicationName}-${StSourceName}-lambda-lib-${Env}"
+                },
+                "LicenseInfo": "MIT"
+            }
+        },
+        "LambdaUtilsLayer": {
+            "Type": "AWS::Serverless::LayerVersion",
+            "Properties": {
+                "CompatibleRuntimes": [
+                    "python3.12",
+                    "python3.11"
+                ],
+                "ContentUri": "layers/helper_functions",
+                "Description": "Helper Modules for Strava Running Lambda",
+                "LayerName": {
+                    "Fn::Sub": "${ApplicationName}-${StSourceName}-lambda-modules-${Env}"
+                },
+                "LicenseInfo": "MIT"
+            }
+        },
+        "LambdaFunction": {
+            "Type": "AWS::Serverless::Function",
+            "Properties": {
+                "FunctionName": {
+                    "Fn::Sub": "${ApplicationName}-${StSourceName}-${Env}"
+                },
+                "Description": "Lambda Function to Pull Running Statistics from Strava API",
+                "Runtime": "python3.12",
+                "CodeUri": "lambda",
+                "Handler": "LambdaFunction.LambdaHandler",
+                "MemorySize": 128,
+                "Timeout": 300,
+                "Role": {
+                    "Ref": "CommonLambdaRoleArn"
+                },
+                "Environment": {
+                    "Variables": {
+                        "Env": {
+                            "Ref": "Env"
+                        },
+                        "StravaClientId": {
+                            "Ref": "StravaClientId"
+                        },
+                        "StravaRedirectUri": {
+                            "Ref": "StravaRedirectUri"
+                        },
+                        "StravaActivitiesUrl": {
+                            "Ref": "StravaActivitiesUrl"
+                        },
+                        "StravaAuthUrl": {
+                            "Ref": "StravaAuthUrl"
+                        },
+                        "StravaClientSecret": {
+                            "Ref": "StravaClientSecret"
+                        },
+                        "StravaRefreshToken": {
+                            "Ref": "StravaRefreshToken"
+                        },
+                        "StravaTokenUrl": {
+                            "Ref": "StravaTokenUrl"
+                        },
+                        "StravaAccessToken": {
+                            "Ref": "StravaAccessToken"
+                        },
+                        "BulletinEmailAddress": {
+                            "Ref": "BulletinEmailAddress"
+                        },
+                        "BulletEmailAddressAppPassword": {
+                            "Ref": "BulletEmailAddressAppPassword"
+                        },
+                        "RecEmail": {
+                            "Ref": "RecEmail"
+                        }
+                    }
+                },
+                "Layers": [
+                    {
+                        "Fn::GetAtt": [
+                            "LambdaLibsLayer",
+                            "LayerVersionArn"
+                        ]
+                    },
+                    {
+                        "Fn::GetAtt": [
+                            "LambdaUtilsLayer",
+                            "LayerVersionArn"
+                        ]
+                    },
+                    {
+                        "Fn::Sub": "${CommonLayerArn}"
+                    }
+                ]
+            }
+        },
+        "ScheduledRule": {
+            "Type": "AWS::Events::Rule",
+            "Properties": {
+                "Name": {
+                    "Fn::Sub": "${ApplicationName}-${StSourceName}-eventrule-${Env}"
+                },
+                "Description": "Triggers the event at 9:00 AM IST every day",
+                "ScheduleExpression": "cron(30 3 * * ? *)",
+                "State": "ENABLED",
+                "Targets": [
+                    {
+                        "Arn": {
+                            "Fn::GetAtt": [
+                                "LambdaFunction",
+                                "Arn"
+                            ]
+                        },
+                        "Id": "LambdaFunction"
+                    }
+                ]
+            },
+            "DependsOn": "LambdaFunction"
+        },
+        "PermissionForEventsToInvokeLambda": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFunction"
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "events.amazonaws.com",
+                "SourceArn": {
+                    "Fn::GetAtt": [
+                        "ScheduledRule",
+                        "Arn"
+                    ]
+                }
+            },
+            "DependsOn": "LambdaFunction"
+        }
+    }
+}
