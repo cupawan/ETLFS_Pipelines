@@ -13,8 +13,8 @@ class StravaAPI:
     def __init__(self, config_path=None):
         # self.token_file = "strava_tokens.yaml"
         # self.access_token, self.refresh_token = self.loadTokens()
-        self.access_token = os.environ["STRAVA_ACCESS_TOKEN"]
-        self.refresh_token = os.environ["STRAVA_REFRESH_TOKEN"]
+        self.access_token = os.environ["StravaAccessToken"]
+        self.refresh_token = os.environ["StravaRefreshToken"]
         self.client = self.setUpClient()
         # self.ensureValidToken()
         self.utils = CommonUtils()
@@ -28,9 +28,9 @@ class StravaAPI:
     def getAuthorizationUrl(self):
         authorization_url = (
             f"https://www.strava.com/oauth/authorize"
-            f"?client_id={os.environ['STRAVA_CLIENT_ID']}"
+            f"?client_id={os.environ['StravaClientId']}"
             f"&response_type=code"
-            f"&redirect_uri={os.environ['STRAVA_REDIRECT_URI']}"
+            f"&redirect_uri={os.environ['StravaRedirectUri']}"
             f"&scope=read,activity:read_all,activity:write"
             f"&approval_prompt=force"
         )
@@ -41,8 +41,8 @@ class StravaAPI:
             response = requests.post(
                 'https://www.strava.com/oauth/token',
                 data={
-                    'client_id': os.environ['STRAVA_CLIENT_ID'],
-                    'client_secret': os.environ['STRAVA_CLIENT_SECRET'],
+                    'client_id': os.environ['StravaClientId'],
+                    'client_secret': os.environ['StravaClientSecret'],
                     'code': code,
                     'grant_type': 'authorization_code'
                 }
@@ -76,8 +76,8 @@ class StravaAPI:
             response = requests.post(
                 'https://www.strava.com/oauth/token',
                 data={
-                    'client_id': os.environ['STRAVA_CLIENT_ID'],
-                    'client_secret': os.environ['STRAVA_CLIENT_SECRET'],
+                    'client_id': os.environ['StravaClientId'],
+                    'client_secret': os.environ['StravaClientSecret'],
                     'grant_type': 'refresh_token',
                     'refresh_token': self.refresh_token,
                 }
