@@ -1,8 +1,6 @@
 import os
 import yaml
 import pytz
-# import folium
-# import polyline
 import requests
 from stravalib.client import Client
 from datetime import datetime, timedelta
@@ -11,12 +9,9 @@ from DatetimeUtils import CommonUtils
 
 class StravaAPI:
     def __init__(self, config_path=None):
-        # self.token_file = "strava_tokens.yaml"
-        # self.access_token, self.refresh_token = self.loadTokens()
         self.access_token = os.environ["StravaAccessToken"]
         self.refresh_token = os.environ["StravaRefreshToken"]
         self.client = self.setUpClient()
-        # self.ensureValidToken()
         self.utils = CommonUtils()
         self.ist = pytz.timezone('Asia/Kolkata')
 
@@ -51,25 +46,14 @@ class StravaAPI:
             tokens = response.json()
             self.access_token = tokens['access_token']
             self.refresh_token = tokens['refresh_token']
-            self.saveTokens()
+            self.updateEnvironmentTokens()
             self.client.access_token = self.access_token
         except requests.RequestException as e:
             print(f"Error exchanging code for token: {e}")
 
-    def saveTokens(self):
-        tokens = {
-            'access_token': self.access_token,
-            'refresh_token': self.refresh_token
-        }
-        with open(self.token_file, 'w') as f:
-            yaml.safe_dump(tokens, f)
-
-    def loadTokens(self):
-        if os.path.exists(self.token_file):
-            with open(self.token_file) as f:
-                tokens = yaml.safe_load(f)
-                return tokens.get('access_token'), tokens.get('refresh_token')
-        return None, None
+    def updateEnvironmentTokens(self):
+        os.environ["StravaAccessToken"] = self.access_token
+        os.environ["StravaRefreshToken"] = self.refresh_token
 
     def refreshAccessToken(self):
         try:
@@ -87,33 +71,33 @@ class StravaAPI:
             self.access_token = tokens['access_token']
             self.refresh_token = tokens['refresh_token']
             self.client.access_token = self.access_token
-            self.saveTokens()
+            self.updateEnvironmentTokens()
         except requests.RequestException as e:
             print(f"Error refreshing access token: {e}")
 
-    def ensureValidToken(self):
-        if not self.access_token:
-            print("Go to the following URL to authorize the application:")
-            print(self.getAuthorizationUrl())
-            authorization_code = input("Enter the authorization code from the URL: ").strip()
-            self.exchangeCodeForToken(authorization_code)
-        else:
-            self.client.access_token = self.access_token
+    # def ensureValidToken(self):
+    #     if not self.access_token:
+    #         print("Go to the following URL to authorize the application:")
+    #         print(self.getAuthorizationUrl())
+    #         authorization_code = input("Enter the authorization code from the URL: ").strip()
+    #         self.exchangeCodeForToken(authorization_code)
+    #     else:
+    #         self.client.access_token = self.access_token
 
-    def getOutputDict(self):
-        return {
-            'ID': [],
-            'Date': [],
-            'Name': [],
-            'Distance': [],
-            'Average Pace': [],
-            'Max Pace': [],
-            'Average Heart Rate': [],
-            'Max Heart Rate': [],
-            'Average Cadence': [],
-            'Moving Time': [],
-            'Comments': []
-        }
+    # def getOutputDict(self):
+    #     return {
+    #         'ID': [],
+    #         'Date': [],
+    #         'Name': [],
+    #         'Distance': [],
+    #         'Average Pace': [],
+    #         'Max Pace': [],
+    #         'Average Heart Rate': [],
+    #         'Max Heart Rate': [],
+    #         'Average Cadence': [],
+    #         'Moving Time': [],
+    #         'Comments': []
+    #     }
     
     def getLastSavedActivity(self):
         try:
