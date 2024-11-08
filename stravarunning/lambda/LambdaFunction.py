@@ -1,3 +1,4 @@
+import os
 from Execute import Helper
 from EmailUtils import SendEmail
 
@@ -7,4 +8,4 @@ def LambdaHandler(event, context):
     help = Helper()
     data = help.getLatestActivity()
     msg = help.formatMessage(data = data)
-    SendEmail(is_html=True).send_email(body = msg, subject= sub)
+    SendEmail(is_html=True).send_email(send_to = os.environ["RecEmail"], subject = sub, email_body = msg)
