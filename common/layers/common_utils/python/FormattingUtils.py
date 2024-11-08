@@ -777,8 +777,8 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         </head>
         <body>
             <div class="container">
-                <div class="header">
-                <img src = "https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-c33577e7257d5ac4a2e972564c5c7556037f3d005c5b5cb2f0e0d06ac7b84c47.svg" height = "100" width = "100">
+                <div class="header" style="text-align: center;">
+                <img src = "https://d3nn82uaxijpm6.cloudfront.net/apple-touch-icon-76x76.png">
                 Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
                 </div>
                 <div class="content">
