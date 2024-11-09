@@ -201,7 +201,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #2d2d30;
-            color: #d1d1d1;
+            color: 	#3e3e42;
             padding: 20px;
             margin-bottom: 30px;
             line-height: 1.6;
