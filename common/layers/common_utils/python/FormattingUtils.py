@@ -12,10 +12,6 @@ class Formatter:
         margin: 0;
         padding: 0;
     }
-    .summary span {{
-        font-weight: bold;
-        color: 	#007acc;
-    }}
 
     .container {
         max-width: 600px;
@@ -81,7 +77,7 @@ class Formatter:
 
     .weather-details, .data-table td {
         text-align: center;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .data-table {
@@ -122,19 +118,19 @@ class Formatter:
         height: 80px;
         }
 
-    .device-img {{
+    .footer img.device-img {
+        display: block;
+        margin: 0 auto 10px auto;
         border-radius: 50%;
-        margin-right: 20px;
-        border: 3px solid #444;
+        border: 2px solid #007acc;
         width: 80px;
         height: 80px;
-        }}
-
+        }
         </style>"""
 
     def running_html(self, running_data):
         return f"""
-        <h3 class="data-table">Running ({running_data['formatted_date']})</h3> 
+        <h3 class="weather-header"">Running ({running_data['formatted_date']})</h3> 
         <div style="text-align: center; margin-bottom: 20px;">
         <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
@@ -238,7 +234,7 @@ Shoes: {running_data['gear']}
 
     def sleep_html(self, sleep_data):
         return f"""
-            <h3 class="data-table">Sleep ({sleep_data['formatted_date']})</h3>
+            <h3 class="weather-header"">Sleep ({sleep_data['formatted_date']})</h3>
             <table class="data-table">
                 <tr><th>Overall Sleep Summary</th></tr>
                 <tr><td>You slept for {sleep_data['total_time']}, from {sleep_data['from_']} to {sleep_data['to_']}</td></tr>
@@ -330,11 +326,9 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 <div class="container">
                 {html_body}
                 <div class="footer">
-            <p></p>
-            <img src="{data['device_image']}" class="device-img" width="15" height="15">
-            <p>Uploaded From: <b>{data['device_name']}</b></p>
-        </div>
-
+                <img src="{data['device_image']}" class="device-img" width="15" height="15">
+                <p>Uploaded From: <b>{data['device_name']}</b></p>
+                </div>
                 </body>
                 </html>
     """
