@@ -216,7 +216,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                     color: #ffffff;
                     padding: 10px;
                     text-align: center;
-                    font-size: 24px;
+                    font-size: 18px;
                 }}
                 .content {{
                     padding: 20px;
