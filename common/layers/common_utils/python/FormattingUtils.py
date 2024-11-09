@@ -834,3 +834,83 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         """
 
         return html_content
+    
+    def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
+        html_content = '''<html>
+        <head>
+        <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f8ff; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
+        .weather-card { border: 1px solid #ccc; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
+        .weather-header { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .weather-details { margin-left: 15px; }
+        .weather-details p { margin: 5px 0; }
+        .weather-details ul { list-style-type: none; padding: 0; }
+        .weather-details ul li { margin-bottom: 5px; }
+        .summary { color: #1e90ff; font-weight: bold; }
+        .temp { color: #2e8b57; }
+        .sunrise-sunset { color: #ffa500; }
+        .wind { color: #4682b4; }
+        .uv-index { color: #ff6347; }
+        .greeting { background-color: #1e90ff; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:nth-child(odd) { background-color: #fff; }
+        </style>
+        </head>
+        <body>
+        '''
+
+        html_content += f'''<div class="container">
+        <div class="greeting">
+        <h2 style="margin-top: 0;">Weather Report</h2>
+        <h3 style="margin-top: 0;">Good Morning, {str(name).title()}</h3>
+        <p>Weather Forecast for Today at<br><b>{str(location).title()}</b></p>
+        </div>
+        '''
+
+        html_content += '<div class="weather-card">\n'
+        html_content += f'<div class="weather-header">{CommonUtils().timestamp_to_date(data_list["dt"])}</div>\n'
+        html_content += '<div class="weather-details">\n'
+        html_content += f'<p class="summary">Summary: {data_list["summary"]}</p>\n'
+        html_content += '<table>\n'
+        html_content += '<tr><th>Sunrise</th><th>Sunset</th><th>Temp Day</th><th>Temp Night</th><th>Feels Like Day</th><th>Feels Like Night</th><th>Humidity</th><th>Wind</th><th>UV Index</th></tr>\n'
+        html_content += f'<tr><td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunrise"])}</td>'
+        html_content += f'<td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunset"])}</td>'
+        html_content += f'<td class="temp">{data_list["temp"]["day"]} °C</td>'
+        html_content += f'<td class="temp">{data_list["temp"]["night"]} °C</td>'
+        html_content += f'<td class="temp">{data_list["feels_like"]["day"]} °C</td>'
+        html_content += f'<td class="temp">{data_list["feels_like"]["night"]} °C</td>'
+        html_content += f'<td>{data_list["humidity"]} %</td>'
+        html_content += f'<td class="wind">{data_list["wind_speed"]} m/s, {data_list["wind_deg"]}°</td>'
+        html_content += f'<td class="uv-index">{data_list["uvi"]}</td></tr>\n'
+        html_content += '</table>\n'
+        html_content += '</div>\n'
+        html_content += '</div>\n'
+
+        html_content += '<div class="weather-card">\n'
+        html_content += '<div class="weather-header">Hourly Forecast For Next 24 Hours</div>\n'
+        html_content += '<div class="weather-details">\n'
+        html_content += '<table>\n'
+        html_content += '<tr><th>Time</th><th>Summary</th><th>Temp</th><th>Feels Like</th><th>Humidity</th><th>Wind</th><th>UV Index</th><th>Clouds (% of sky)</th></tr>\n'
+        for hour in day_list:
+            html_content += f'<tr><td>{CommonUtils().timestamp_to_time(hour["dt"])}</td>'
+            html_content += f'<td class="summary">{hour["weather"][0]["description"].title()}</td>'
+            html_content += f'<td class="temp">{hour["temp"]} °C</td>'
+            html_content += f'<td class="temp">{hour["feels_like"]} °C</td>'
+            html_content += f'<td>{hour["humidity"]} %</td>'
+            html_content += f'<td class="wind">{hour["wind_speed"]} m/s, {hour["wind_deg"]}°</td>'
+            html_content += f'<td class="uv-index">{hour["uvi"]}</td>'
+            html_content += f'<td class="uv-index">{hour["clouds"]}%</td></tr>\n'
+        html_content += '</table>\n'
+        html_content += '</div>\n'
+        html_content += '</div>\n'
+
+        html_content += '''<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>'''
+        html_content += '</div>\n'
+        html_content += '</body>\n</html>'
+
+        return html_content
+
