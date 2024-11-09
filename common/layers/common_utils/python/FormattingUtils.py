@@ -107,7 +107,7 @@ class Formatter:
     .profile-img {
         border-radius: 50%;
         margin-right: 20px;
-        border: 10px solid #b48646;
+        border: 2px solid #b48646;
         width: 80px;
         height: 80px;
         }
@@ -115,7 +115,7 @@ class Formatter:
     .device-img {
         border-radius: 50%;
         margin-right: 20px;
-        border: 10px solid #b48646;
+        border: 1px solid #b48646;
         width: 40px;
         height: 40px;
         }
@@ -728,20 +728,21 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             start_date, "%Y-%m-%dT%H:%M:%SZ"
         ).strftime("%Y-%m-%d %H:%M:%S")
         html_content = f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Strava Activity Summary</title>
-            {self.style}
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
-                </div>
-                <div class="content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava Activity Summary</title>
+    {self.style}
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Strava Activity Summary</h1>
+            <h2>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</h2>
+        </div>
+        <div class="content">
                     <table>
                         <tr>
                             <th colspan="2">Activity Details</th>
