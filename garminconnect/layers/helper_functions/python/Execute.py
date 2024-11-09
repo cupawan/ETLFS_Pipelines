@@ -33,7 +33,7 @@ class Helper:
         data = self.type_statistics_dict[self.this_hour][0]()
         html_body = self.type_statistics_dict[self.this_hour][1](data)
         logger.info("Data fetched successfully. Formatting email body.")
-        email_body = Formatter().garminMainEmailFormatter(html_body = html_body)
+        email_body = Formatter().garminMainEmailFormatter(data = data, html_body = html_body)
         logger.info("Sending email with Garmin statistics")
         email_message = SendEmail(is_html=True).send_email(send_to = os.environ['RecEmail'], subject = "Garmin Statistics", email_body = email_body)
         # self._send_telegram_doc(html_body=email_body)
