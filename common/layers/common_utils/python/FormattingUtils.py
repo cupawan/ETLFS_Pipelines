@@ -358,7 +358,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         }}
         .summary span {{
             font-weight: bold;
-            color: #00bfa5;
+            color: 	#3e3e42;
         }}
         .data-table {{
             width: 100%;
