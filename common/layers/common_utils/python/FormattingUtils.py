@@ -27,24 +27,17 @@ class Formatter:
         font-weight: bold;
         margin-top: 0;
     }
-
-    .header, .greeting, .weather-card, .data-table {
-        margin-bottom: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-    }
-
+    .header, .greeting, .weather-card, .data-table {{
+        background-color: #0073e6;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+        }}
     .header img.profile-img {
         border-radius: 50%;
         margin-right: 15px;
     }
-
     .weather-header, .weather-card h3, .data-table th {
         background-color: #00bfa5;
         color: #fff;
@@ -52,45 +45,52 @@ class Formatter:
         text-align: center;
         border-radius: 5px 5px 0 0;
     }
-
     table {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 15px;
     }
-
     th, td {
         padding: 8px;
         border: 1px solid #ddd;
         text-align: left;
     }
-
     th {
         background-color: #00bfa5;
         color: white;
     }
-
     .temp, .wind, .uv-index, .summary, .score {
         font-weight: bold;
-        color: #333;
+        color: #2e8b57;
     }
-
     .weather-details, .data-table td {
         text-align: center;
         font-size: 14px;
     }
-
     .data-table {
         background-color: #f9f9f9;
     }
-
     .data-table th, .data-table td {
         border: 1px solid #ccc;
     }
-
     .greeting h3, .greeting p {
         margin: 0;
     }
+    .footer img {{
+        max-width: 100%;
+        width: 100%;
+        height: auto; 
+        margin-top: 10px;
+        }}
+    .footer {{
+        text-align: center;
+        color: #777;
+        font-size: 0.9em;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        margin-top: 20px;
+        }}
+
 </style>
 """
 
@@ -281,7 +281,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                     <h1>Garmin Statistics</h1>
                     <p><b>{data['user_name']}</b></p>
                 </div>
-            </div>""" 
+            </div>"""
         html_content = f"""
             <html>
             <head>
@@ -772,27 +772,27 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         """
 
         return html_content
-    
-    def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
-        html_content = f'''<html>
+
+    def formatWeatherDataHtmlTableEmail(self, data_list, day_list, name, location):
+        html_content = f"""<html>
         <head>
         {self.style}
         </head>
         <body>
-        '''
-        html_content += f'''<div class="container">
+        """
+        html_content += f"""<div class="container">
         <div class="greeting">
         <h2 style="margin-top: 0;">Weather Report</h2>
         <h3 style="margin-top: 0;">Good Morning, {str(name).title()}</h3>
         <p>Weather Forecast for Today at<br><b>{str(location).title()}</b></p>
         </div>
-        '''
+        """
         html_content += '<div class="weather-card">\n'
         html_content += f'<div class="weather-header">{CommonUtils().timestamp_to_date(data_list["dt"])}</div>\n'
         html_content += '<div class="weather-details">\n'
         html_content += f'<p class="summary">Summary: {data_list["summary"]}</p>\n'
-        html_content += '<table>\n'
-        html_content += '<tr><th>Sunrise</th><th>Sunset</th><th>Temp Day</th><th>Temp Night</th><th>Feels Like Day</th><th>Feels Like Night</th><th>Humidity</th><th>Wind</th><th>UV Index</th></tr>\n'
+        html_content += "<table>\n"
+        html_content += "<tr><th>Sunrise</th><th>Sunset</th><th>Temp Day</th><th>Temp Night</th><th>Feels Like Day</th><th>Feels Like Night</th><th>Humidity</th><th>Wind</th><th>UV Index</th></tr>\n"
         html_content += f'<tr><td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunrise"])}</td>'
         html_content += f'<td class="sunrise-sunset">{CommonUtils().timestamp_to_datetime(data_list["sunset"])}</td>'
         html_content += f'<td class="temp">{data_list["temp"]["day"]} °C</td>'
@@ -802,29 +802,36 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content += f'<td>{data_list["humidity"]} %</td>'
         html_content += f'<td class="wind">{data_list["wind_speed"]} m/s, {data_list["wind_deg"]}°</td>'
         html_content += f'<td class="uv-index">{data_list["uvi"]}</td></tr>\n'
-        html_content += '</table>\n'
-        html_content += '</div>\n'
-        html_content += '</div>\n'
+        html_content += "</table>\n"
+        html_content += "</div>\n"
+        html_content += "</div>\n"
 
         html_content += '<div class="weather-card">\n'
-        html_content += '<div class="weather-header">Hourly Forecast For Next 24 Hours</div>\n'
+        html_content += (
+            '<div class="weather-header">Hourly Forecast For Next 24 Hours</div>\n'
+        )
         html_content += '<div class="weather-details">\n'
-        html_content += '<table>\n'
-        html_content += '<tr><th>Time</th><th>Summary</th><th>Temp</th><th>Feels Like</th><th>Humidity</th><th>Wind</th><th>UV Index</th><th>Clouds (% of sky)</th></tr>\n'
+        html_content += "<table>\n"
+        html_content += "<tr><th>Time</th><th>Summary</th><th>Temp</th><th>Feels Like</th><th>Humidity</th><th>Wind</th><th>UV Index</th><th>Clouds (% of sky)</th></tr>\n"
         for hour in day_list:
-            html_content += f'<tr><td>{CommonUtils().timestamp_to_time(hour["dt"])}</td>'
-            html_content += f'<td class="summary">{hour["weather"][0]["description"].title()}</td>'
+            html_content += (
+                f'<tr><td>{CommonUtils().timestamp_to_time(hour["dt"])}</td>'
+            )
+            html_content += (
+                f'<td class="summary">{hour["weather"][0]["description"].title()}</td>'
+            )
             html_content += f'<td class="temp">{hour["temp"]} °C</td>'
             html_content += f'<td class="temp">{hour["feels_like"]} °C</td>'
             html_content += f'<td>{hour["humidity"]} %</td>'
-            html_content += f'<td class="wind">{hour["wind_speed"]} m/s, {hour["wind_deg"]}°</td>'
+            html_content += (
+                f'<td class="wind">{hour["wind_speed"]} m/s, {hour["wind_deg"]}°</td>'
+            )
             html_content += f'<td class="uv-index">{hour["uvi"]}</td>'
             html_content += f'<td class="uv-index">{hour["clouds"]}%</td></tr>\n'
-        html_content += '</table>\n'
-        html_content += '</div>\n'
-        html_content += '</div>\n'
-        html_content += '''<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>'''
-        html_content += '</div>\n'
-        html_content += '</body>\n</html>'
+        html_content += "</table>\n"
+        html_content += "</div>\n"
+        html_content += "</div>\n"
+        html_content += """<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>"""
+        html_content += "</div>\n"
+        html_content += "</body>\n</html>"
         return html_content
-
