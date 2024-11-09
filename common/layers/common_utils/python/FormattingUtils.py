@@ -731,7 +731,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         return html_content
     
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
-        html_content = '''<html>
+        html_content = f'''<html>
         <head>
         {self.head}
         </head>
