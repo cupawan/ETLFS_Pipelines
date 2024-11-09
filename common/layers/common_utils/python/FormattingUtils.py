@@ -389,196 +389,198 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         ).strftime("%Y-%m-%d %H:%M:%S")
 
         html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Strava Activity Summary</title>
-        <style>
-            body {{
-                font-family: 'Arial', sans-serif;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 0;
-                color: #2d2d30;
-            }}
-    
-            .container {{
-                width: 80%;
-                max-width: 800px;
-                margin: 30px auto;
-                background-color: #ffffff;
-                border-radius: 15px;
-                overflow: hidden;
-                box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-                padding: 20px;
-            }}
-    
-            .header {{
-                background-color: #007acc;
-                color: white;
-                text-align: center;
-                padding: 25px 0;
-                font-size: 26px;
-                font-weight: bold;
-                border-radius: 10px;
-                margin-bottom: 30px;
-            }}
-    
-            .header h1 {{
-                margin: 0;
-            }}
-    
-            .header p {{
-                font-size: 18px;
-                margin-top: 5px;
-                color: #cfe2ff;
-            }}
-    
-            .content {{
-                padding: 20px;
-            }}
-    
-            .table-container {{
-                background-color: #f9f9f9;
-                border-radius: 10px;
-                overflow: hidden;
-                margin-bottom: 30px;
-            }}
-    
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-            }}
-    
-            th, td {{
-                padding: 15px;
-                text-align: left;
-            }}
-    
-            th {{
-                background-color: #007acc;
-                color: white;
-                font-size: 16px;
-            }}
-    
-            td {{
-                font-size: 16px;
-                border-bottom: 1px solid #ddd;
-            }}
-    
-            td.highlight {{
-                font-weight: bold;
-                color: #007acc;
-            }}
-    
-            tr:last-child td {{
-                border-bottom: none;
-            }}
-    
-            .summary-footer {{
-                text-align: center;
-                font-size: 14px;
-                color: #888888;
-            }}
-    
-            .icon {{
-                width: 20px;
-                height: 20px;
-                margin-right: 8px;
-            }}
-    
-            .button {{
-                display: inline-block;
-                background-color: #007acc;
-                color: white;
-                padding: 10px 20px;
-                text-decoration: none;
-                border-radius: 5px;
-                font-weight: bold;
-                text-align: center;
-                margin-top: 10px;
-                transition: background-color 0.3s ease;
-            }}
-    
-            .button:hover {{
-                background-color: #005fa3;
-            }}
-        </style>
-    </head>
-    <body>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity Summary</title>
+            <style>
+                body {{
+                    font-family: 'Arial', sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                    color: #2d2d30;
+                }}
+        
+                .container {{
+                    width: 90%;
+                    max-width: 900px;
+                    margin: 30px auto;
+                    background-color: #ffffff;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+                    padding: 20px;
+                }}
+        
+                .header {{
+                    background-color: #007acc;
+                    color: white;
+                    text-align: center;
+                    padding: 25px 0;
+                    font-size: 26px;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    margin-bottom: 30px;
+                }}
+        
+                .header h1 {{
+                    margin: 0;
+                }}
+        
+                .header p {{
+                    font-size: 18px;
+                    margin-top: 5px;
+                    color: #cfe2ff;
+                }}
+        
+                .content {{
+                    padding: 20px;
+                }}
+        
+                .table-container {{
+                    background-color: #f9f9f9;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    margin-bottom: 30px;
+                }}
+        
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0;
+                }}
+        
+                th, td {{
+                    padding: 12px 20px;
+                    text-align: left;
+                }}
+        
+                th {{
+                    background-color: #007acc;
+                    color: white;
+                    font-size: 16px;
+                }}
+        
+                td {{
+                    font-size: 16px;
+                    border-bottom: 1px solid #ddd;
+                }}
+        
+                td.highlight {{
+                    font-weight: bold;
+                    color: #007acc;
+                }}
+        
+                tr:last-child td {{
+                    border-bottom: none;
+                }}
+        
+                .summary-footer {{
+                    text-align: center;
+                    font-size: 14px;
+                    color: #888888;
+                }}
+        
+                .icon {{
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 8px;
+                }}
+        
+                .button {{
+                    display: inline-block;
+                    background-color: #007acc;
+                    color: white;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-top: 10px;
+                    transition: background-color 0.3s ease;
+                }}
+        
+                .button:hover {{
+                    background-color: #005fa3;
+                }}
+            </style>
+        </head>
+        <body>
 
-        <div class="container">
-            <div class="header">
-                <h1>Strava Activity Summary</h1>
-                <p>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</p>
-            </div>
-
-            <div class="content">
-                <div class="table-container">
-                    <table>
-                        <tr>
-                            <th colspan="2">Activity Details</th>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Activity Name:</td>
-                            <td>{name}</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Distance:</td>
-                            <td>{distance / 1000:.2f} km</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Moving Time:</td>
-                            <td>{CommonUtils().seconds_to_hm(moving_time)}</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Start Date:</td>
-                            <td>{formatted_start_date}</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Average Speed:</td>
-                            <td>{CommonUtils().convert_speed_mps_to_minkm(average_speed)}</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Max Speed:</td>
-                            <td>{CommonUtils().convert_speed_mps_to_minkm(max_speed)}</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Average Heartrate:</td>
-                            <td>{average_heartrate} BPM</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Max Heartrate:</td>
-                            <td>{max_heartrate} BPM</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Average Cadence:</td>
-                            <td>{cadence} SPM</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Average Temp:</td>
-                            <td>{average_temp} °C</td>
-                        </tr>
-                        <tr>
-                            <td class="highlight">Calories:</td>
-                            <td>{calories} kJ</td>
-                        </tr>
-                    </table>
+            <div class="container">
+                <div class="header">
+                    <h1>Strava Activity Summary</h1>
+                    <p>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</p>
                 </div>
 
-                <p class="summary-footer">This email was generated automatically. For more details, visit your Strava account.</p>
+                <div class="content">
+                    <div class="table-container">
+                        <table>
+                            <tr>
+                                <th colspan="2">Activity Details</th>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Activity Name:</td>
+                                <td>{name}</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Distance:</td>
+                                <td>{distance / 1000:.2f} km</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Moving Time:</td>
+                                <td>{CommonUtils().seconds_to_hm(moving_time)}</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Start Date:</td>
+                                <td>{formatted_start_date}</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Average Speed:</td>
+                                <td>{CommonUtils().convert_speed_mps_to_minkm(average_speed)}</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Max Speed:</td>
+                                <td>{CommonUtils().convert_speed_mps_to_minkm(max_speed)}</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Average Heartrate:</td>
+                                <td>{average_heartrate} BPM</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Max Heartrate:</td>
+                                <td>{max_heartrate} BPM</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Average Cadence:</td>
+                                <td>{cadence} SPM</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Average Temp:</td>
+                                <td>{average_temp} °C</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Calories:</td>
+                                <td>{calories} kJ</td>
+                            </tr>
+                        </table>
+                    </div>
 
-                <a href="https://www.strava.com" class="button">View on Strava</a>
+                    <p class="summary-footer">This email was generated automatically. For more details, visit your Strava account.</p>
+
+                    <a href="https://www.strava.com" class="button">View on Strava</a>
+                </div>
             </div>
-        </div>
 
-    </body>
-    </html>
-    """
+        </body>
+        </html>
+        """
 
         return html_content
+
     
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
         html_content = '''<html>
