@@ -737,7 +737,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Strava Activity Summary</title>
-            {self.head}
+            {self.style}
         </head>
         <body>
             <div class="container">
