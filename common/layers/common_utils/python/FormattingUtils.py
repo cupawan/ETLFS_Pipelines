@@ -195,131 +195,144 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 </div>
             </div>""" 
         html_content = f"""
-            <html>
-            <head>
-                    <style>
-            body {{
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #242424;
-                color: #d1d1d1;
-                padding: 20px;
-                margin-bottom: 30px;
-                line-height: 1.6;
-            }}
-            .header {{
-                display: flex;
-                align-items: center;
-                margin-bottom: 30px;
-            }}
-            .profile-img {{
-                border-radius: 50%;
-                margin-right: 20px;
-                border: 3px solid #444;
-                width: 80px;
-                height: 80px;
-            }}
-            .summary {{
-                background-color: #242424;
-                border-radius: 12px;
-                padding: 20px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-                margin-bottom: 30px;
-                border: 1px solid #444;
-                color: #d1d1d1;
-            }}
-            .summary span {{
-                font-weight: bold;
-                color: #00bfa5;
-            }}
-            .data-table {{
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 30px;
-            }}
-            th, td{{
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #444;
-                color: #cfd8dc;
-            }}
-            th {{
-                background-color: #333;
-                color: #00bfa5;
-                font-size: 1.1em;
-                letter-spacing: 0.5px;
-            }}
-            td {{
-                background-color: #202020;
-                font-size: 0.95em;
-            }}
-            .section-title {{
-                font-size: 1.6em;
-                margin-bottom: 15px;
-                color: #00bfa5;
-                font-weight: bold;
-                letter-spacing: 0.5px;
-            }}
-            .footer {{
-                text-align: center;
-                color: #888;
-                font-size: 0.85em;
-                padding: 15px;
-                border-top: 1px solid #444;
-                margin-top: 30px;
-            }}
-            .footer img {{
-                max-width: 100%;
-                height: auto;
-                margin-top: 15px;
-            }}
-            a {{
-                color: #00bfa5;
-                text-decoration: none;
-            }}
-            a:hover {{
-                text-decoration: underline;
-            }}
-            button {{
-                background-color: #00bfa5;
-                color: #181818;
-                border: none;
-                padding: 12px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 1em;
-                transition: background-color 0.3s ease;
-            }}
-            button:hover {{
-                background-color: #009688;
-            }}
-            .additional-details p {{
-                font-size: 0.9em;
-                color: #b0bec5;
-                margin-bottom: 10px;
-            }}
-            /* Animation for hover effects */
-            th, td {{
-                transition: background-color 0.3s ease, color 0.3s ease;
-            }}
-            tr:hover td {{
-                background-color: #333;
-                color: #fff;
-            }}
+        <html>
+        <head>
+            <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2d2d30;
+            color: 	#3e3e42;
+            padding: 20px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 20px;
+        }}
+        .profile-img {{
+            border-radius: 50%;
+            margin-right: 20px;
+            border: 3px solid #444;
+            width: 80px;
+            height: 80px;
+        }}
+        .header h1 {{
+            font-size: 2.2em;
+            color: #007acc;
+            margin: 0;
+        }}
+        .header p {{
+            font-size: 1.1em;
+            color: #b0bec5;
+        }}
+        .summary {{
+            background-color: #242424;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+            margin-bottom: 30px;
+            border: 1px solid #444;
+        }}
+        .summary span {{
+            font-weight: bold;
+            color: 	#3e3e42;
+        }}
+        .data-table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }}
+        th, td {{
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+            color: #cfd8dc;
+        }}
+        th {{
+            background-color: #007acc;
+            color: #fff;
+            font-size: 1.1em;
+            letter-spacing: 0.5px;
+        }}
+        td {{
+            background-color: #202020;
+            font-size: 0.95em;
+        }}
+        .section-title {{
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #007acc;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #007acc;
+            padding-bottom: 10px;
+        }}
+        .footer {{
+            text-align: center;
+            color: #888;
+            font-size: 0.85em;
+            padding: 15px;
+            border-top: 1px solid #444;
+            margin-top: 30px;
+        }}
+        .footer img {{
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+        }}
+        a {{
+            color: #007acc;
+            text-decoration: none;
+        }}
+        a:hover {{
+            text-decoration: underline;
+        }}
+        button {{
+            background-color: #007acc;
+            color: #181818;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }}
+        button:hover {{
+            background-color: #005fa3;
+        }}
+        .additional-details p {{
+            font-size: 0.9em;
+            color: #b0bec5;
+            margin-bottom: 10px;
+        }}
+        /* Animation for hover effects */
+        th, td {{
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }}
+        tr:hover td {{
+            background-color: #333;
+            color: #fff;
+        }}
         </style>
 
-            </head>
-            <body>
-            {header_div}
-                <div class="summary">
-                {html_body}
-                <div class="footer">
-            <p></p>
-            <img src="{data['device_image']}" class="profile-img" width="15" height="15">
-            <p>Uploaded From: <b>{data['device_name']}</b></p>
-        </div>
-    </body>
-    </html>
-    """
+        </head>
+        <body>
+        {header_div}
+            <div class="summary">
+            {html_body}
+            <div class="footer">
+        <p></p>
+        <img src="{data['device_image']}" class="profile-img" width="15" height="15">
+        <p>Uploaded From: <b>{data['device_name']}</b></p>
+    </div>
+</body>
+</html>
+"""
         return html_content
 
     def garminBodystatsFormatterForTelegram(self, d):
