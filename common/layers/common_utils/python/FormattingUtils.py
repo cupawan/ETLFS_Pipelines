@@ -4,7 +4,52 @@ from DatetimeUtils import CommonUtils
 
 class Formatter:
     def __init__(self):
-        pass
+        self.head = """
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+            }
+            .section-title {
+                font-size: 1.8em;
+                font-weight: bold;
+                color: #00bfa5;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .centered-image {
+                max-width: 100%;
+                height: auto;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                display: block;
+                margin: 0 auto 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .highlight {
+                font-weight: bold;
+                color: #00bfa5;
+                text-align: center;
+            }
+            .stats-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .stats-table th, .stats-table td {
+                padding: 8px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+            }
+            .stats-table th {
+                background-color: #f9f9f9;
+                font-weight: bold;
+            }
+        </style>
+        """
 
     def running_html(self, running_data):
         return f"""
@@ -197,116 +242,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content = f"""
             <html>
             <head>
-                    <style>
-            body {{
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #242424;
-                color: #d1d1d1;
-                padding: 20px;
-                margin-bottom: 30px;
-                line-height: 1.6;
-            }}
-            .header {{
-                display: flex;
-                align-items: center;
-                margin-bottom: 30px;
-            }}
-            .profile-img {{
-                border-radius: 50%;
-                margin-right: 20px;
-                border: 3px solid #444;
-                width: 80px;
-                height: 80px;
-            }}
-            .summary {{
-                background-color: #242424;
-                border-radius: 12px;
-                padding: 20px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-                margin-bottom: 30px;
-                border: 1px solid #444;
-                color: #d1d1d1;
-            }}
-            .summary span {{
-                font-weight: bold;
-                color: #00bfa5;
-            }}
-            .data-table {{
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 30px;
-            }}
-            th, td{{
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #444;
-                color: #cfd8dc;
-            }}
-            th {{
-                background-color: #333;
-                color: #00bfa5;
-                font-size: 1.1em;
-                letter-spacing: 0.5px;
-            }}
-            td {{
-                background-color: #202020;
-                font-size: 0.95em;
-            }}
-            .section-title {{
-                font-size: 1.6em;
-                margin-bottom: 15px;
-                color: #00bfa5;
-                font-weight: bold;
-                letter-spacing: 0.5px;
-            }}
-            .footer {{
-                text-align: center;
-                color: #888;
-                font-size: 0.85em;
-                padding: 15px;
-                border-top: 1px solid #444;
-                margin-top: 30px;
-            }}
-            .footer img {{
-                max-width: 100%;
-                height: auto;
-                margin-top: 15px;
-            }}
-            a {{
-                color: #00bfa5;
-                text-decoration: none;
-            }}
-            a:hover {{
-                text-decoration: underline;
-            }}
-            button {{
-                background-color: #00bfa5;
-                color: #181818;
-                border: none;
-                padding: 12px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 1em;
-                transition: background-color 0.3s ease;
-            }}
-            button:hover {{
-                background-color: #009688;
-            }}
-            .additional-details p {{
-                font-size: 0.9em;
-                color: #b0bec5;
-                margin-bottom: 10px;
-            }}
-            /* Animation for hover effects */
-            th, td {{
-                transition: background-color 0.3s ease, color 0.3s ease;
-            }}
-            tr:hover td {{
-                background-color: #333;
-                color: #fff;
-            }}
-        </style>
-
+            {self.head}
             </head>
             <body>
             {header_div}
@@ -728,48 +664,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Strava Activity Summary</title>
-            <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    background-color: #f0f0f0;
-                    padding: 20px;
-                }}
-                .container {{
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background-color: #ffffff;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                }}
-                .header {{
-                    background-color: #007bff;
-                    color: #ffffff;
-                    padding: 10px;
-                    text-align: center;
-                    font-size: 24px;
-                }}
-                .content {{
-                    padding: 20px;
-                }}
-                table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-bottom: 20px;
-                }}
-                th, td {{
-                    padding: 10px;
-                    text-align: left;
-                    border-bottom: 1px solid #ddd;
-                }}
-                th {{
-                    background-color: #007bff;
-                    color: #ffffff;
-                }}
-                .highlight {{
-                    font-weight: bold;
-                }}
-            </style>
+            {self.head}
         </head>
         <body>
             <div class="container">
@@ -838,27 +733,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
         html_content = '''<html>
         <head>
-        <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f8ff; }
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
-        .weather-card { border: 1px solid #ccc; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
-        .weather-header { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .weather-details { margin-left: 15px; }
-        .weather-details p { margin: 5px 0; }
-        .weather-details ul { list-style-type: none; padding: 0; }
-        .weather-details ul li { margin-bottom: 5px; }
-        .summary { color: #1e90ff; font-weight: bold; }
-        .temp { color: #2e8b57; }
-        .sunrise-sunset { color: #ffa500; }
-        .wind { color: #4682b4; }
-        .uv-index { color: #ff6347; }
-        .greeting { background-color: #1e90ff; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:nth-child(odd) { background-color: #fff; }
-        </style>
+        {self.head}
         </head>
         <body>
         '''
