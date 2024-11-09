@@ -92,7 +92,7 @@
         "Description": "Lambda Function to Pull Weather Information from OpenWeatherMap API",
         "Runtime": "python3.12",
         "CodeUri": "lambda",
-        "Handler": "lambda_function.lambda_handler",
+        "Handler": "LambdaFunction.LambdaHandler",
         "MemorySize": 128,
         "Timeout": 300,
         "Role": {

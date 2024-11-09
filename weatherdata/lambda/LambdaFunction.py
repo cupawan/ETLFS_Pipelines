@@ -8,8 +8,8 @@ from FormattingUtils import Formatter
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
-def lambda_handler(event,context):
-    contacts = MongoUtils().find_one(collection_name='weather_pipeline_contacts', key = 'Status', value = 'Activated')
+def LambdaHandler(event,context):
+    contacts = MongoUtils().find_by_key_value(collection_name='weather_pipeline_contacts', key = 'Status', value = 'Activated')
     owm = OpenWeatherMap()
     email_ = SendEmail(is_html=True)
     contacts = list(contacts) if not isinstance(contacts,list) else contacts
