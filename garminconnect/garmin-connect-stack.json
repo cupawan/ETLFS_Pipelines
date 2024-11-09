@@ -88,6 +88,10 @@
     },
     "CommonLambdaRoleArn": {
       "Type": "String"
+    },
+    "GarminProfileImageValue": {
+      "Type": "String",
+      "NoEcho": "true"
     }
   },
   "Resources": {
@@ -185,6 +189,9 @@
             },
             "GoogleMapsApiPath": {
               "Ref": "GoogleMapsApiPath"
+            },
+            "GarminProfileImage": {
+              "Ref": "GarminProfileImageValue"
             }
           }
         },

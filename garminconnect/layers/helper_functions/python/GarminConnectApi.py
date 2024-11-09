@@ -21,6 +21,7 @@ class GarminAPI:
         self.yesterday = self.today - timedelta(days = 1)
         self.yesterday_c_date = self.yesterday.strftime("%Y-%m-%d")
         self.device_name, self.device_image = self.getPrimaryTrainingDevice()
+        self.profile_image = os.environ["GarminProfileImage"]
         self.utils = CommonUtils()
         
     def setUpGarmin(self):
@@ -30,7 +31,7 @@ class GarminAPI:
             print(f"Error logging in Garmin API: {e}")
             api = None
         return api
-
+    
     def getSleepStats(self):
         try:
             logger.info("Fetching Sleep Statistics from Garmin")
@@ -74,7 +75,7 @@ class GarminAPI:
             sleep_start = datetime.datetime.fromtimestamp(sleep_start_ts).astimezone(ist).strftime("%H:%M")
             sleep_end = datetime.datetime.fromtimestamp(sleep_end_ts).astimezone(ist).strftime("%H:%M")
             sleep_dict = {
-                'formatted_date': formatted_date,'total_time' : self.utils.seconds_to_hm(total_sleep_seconds),'from_' : sleep_start,'to_' : sleep_end,'sleep_score' : f"{sleep_score}/100",'quality' : total_duration,'REM_Quality' : rem_percentage,'REM_Time' : self.utils.seconds_to_hm(rem_seconds),'REM_Score' : rem_value,'REM_Optimal' : f"{rem_start}-{rem_end}",'Light_Quality' : light_percentage,'Light_Time' : self.utils.seconds_to_hm(light_seconds),'Light_Score' : light_value,'Light_Optimal' : f"{light_start}-{light_end}",'Deep_Quality' : deep_percentage,'Deep_Time' : self.utils.seconds_to_hm(deep_seconds),'Deep_Score' : deep_value,'Deep_Optimal' : f"{deep_start}-{deep_end}",'Awake_Quality' : awake_count,"Awake_Time" : self.utils.seconds_to_hm(awake_seconds),"Awake_Score" : awake_value,"Awake_Optimal" : f"{awake_start}-{awake_end}","Average_Sleep_Stress" : int(avg_sleep_stress),"Body Battery Change" : body_battery_change,"Resting Heart Rate" : resting_heartrate,"Restlessness Level" : restlessness,"Restless moments" : restless_moments_count,"Sleep Feedback" : feedback.title().replace('_',' '), 'device_name': self.device_name, 'device_image': self.device_image
+                'formatted_date': formatted_date,'total_time' : self.utils.seconds_to_hm(total_sleep_seconds),'from_' : sleep_start,'to_' : sleep_end,'sleep_score' : f"{sleep_score}/100",'quality' : total_duration,'REM_Quality' : rem_percentage,'REM_Time' : self.utils.seconds_to_hm(rem_seconds),'REM_Score' : rem_value,'REM_Optimal' : f"{rem_start}-{rem_end}",'Light_Quality' : light_percentage,'Light_Time' : self.utils.seconds_to_hm(light_seconds),'Light_Score' : light_value,'Light_Optimal' : f"{light_start}-{light_end}",'Deep_Quality' : deep_percentage,'Deep_Time' : self.utils.seconds_to_hm(deep_seconds),'Deep_Score' : deep_value,'Deep_Optimal' : f"{deep_start}-{deep_end}",'Awake_Quality' : awake_count,"Awake_Time" : self.utils.seconds_to_hm(awake_seconds),"Awake_Score" : awake_value,"Awake_Optimal" : f"{awake_start}-{awake_end}","Average_Sleep_Stress" : int(avg_sleep_stress),"Body Battery Change" : body_battery_change,"Resting Heart Rate" : resting_heartrate,"Restlessness Level" : restlessness,"Restless moments" : restless_moments_count,"Sleep Feedback" : feedback.title().replace('_',' '), 'device_name': self.device_name, 'device_image': self.device_image, "user_name": self.api.full_name, 'profile_image': self.profile_image
                 }
             logger.info("Generated Sleep Statistics Data Successfully")
             return sleep_dict
@@ -172,7 +173,7 @@ class GarminAPI:
             if i['activityType']['typeKey'] == "running":
                 running_data["activity_id"] = i['activityId']
                 data = self.getActivityById(i['activityId'])
-                metadata['profile_image'] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
+                # metadata['profile_image'] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
                 metadata['user_name'] = data['metadataDTO']['userInfoDto']['fullname']
                 metadata['location_name'] = data.get('locationName', 'Unknown Location')
                 metadata['gear'] = self.getGearForActivityId(activity_id=i['activityId'])

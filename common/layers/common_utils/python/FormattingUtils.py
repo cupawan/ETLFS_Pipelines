@@ -187,15 +187,13 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         return summary_message
 
     def garminMainEmailFormatter(self, data, html_body):
-        header_div = None
-        if data.get("profile_image") and data.get("user_name"):
-            header_div = f"""<div class="header">
-                    <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
-                    <div>
-                        <h1>Garmin Statistics</h1>
-                        <p><b>{data['user_name']}</b></p>
-                    </div>
-                </div>""" 
+        header_div = f"""<div class="header">
+                <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
+                <div>
+                    <h1>Garmin Statistics</h1>
+                    <p><b>{data['user_name']}</b></p>
+                </div>
+            </div>""" 
         html_content = f"""
             <html>
             <head>

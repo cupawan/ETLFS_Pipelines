@@ -133,6 +133,10 @@
     "StravaAccessToken": {
       "Type": "String",
       "NoEcho": "true"
+    },
+    "GarminProfileImage": {
+      "Type": "String",
+      "NoEcho": "true"
     }
   },
   "Resources": {
@@ -220,6 +224,9 @@
           },
           "CommonLambdaRoleArn": {
             "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+          },
+          "GarminProfileImageValue": {
+            "Ref": "GarminProfileImage"
           }
         }
       }
