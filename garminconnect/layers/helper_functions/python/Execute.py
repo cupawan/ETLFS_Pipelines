@@ -44,7 +44,7 @@ class Helper:
             data = self.type_statistics_dict[self.this_hour][0]()
             html_body = self.type_statistics_dict[self.this_hour][1](data)
             collection_name = self.type_statistics_dict[self.this_hour][2]
-            data_type = collection_name.split("-")[-2].title()
+            data_type = collection_name.split("_")[-2].title()
             logger.info("Data fetched successfully. Formatting email body.")
             email_body = Formatter().garminMainEmailFormatter(data = data, html_body = html_body)
             logger.info("Sending email with Garmin Insights")

@@ -37,11 +37,14 @@ def LambdaHandler(event, context):
         response = main()
         return {"statusCode": 200, "body": json.dumps(response)}
     except NoDataError as e:
-        logger.error(e.msg)
-        telegram_instance.send_plain_message(
-            chat_id=os.environ["TelegramChatId"], text=e.msg
+        error_message = (
+            f"{e.msg}\n\n{str(e)}\n\nTraceback:\n{traceback.format_exc()}"
         )
-        return {"statusCode": 404, "body": e.msg}
+        logger.error(error_message)
+        telegram_instance.send_plain_message(
+            chat_id=os.environ["TelegramChatId"], text= error_message
+        )
+        return {"statusCode": 404, "body": error_message}
     except Exception as e:
         error_message = (
             f"An error occurred: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
