@@ -23,7 +23,7 @@ class Formatter:
     }
 
     h1, h2, h3 {
-        color: #00bfa5;
+        color: #007acc;
         font-weight: bold;
         margin-top: 0;
     }
@@ -46,7 +46,7 @@ class Formatter:
     }
 
     .weather-header, .weather-card h3, .data-table th {
-        background-color: #00bfa5;
+        background-color: #007acc;
         color: #fff;
         padding: 10px;
         text-align: center;
@@ -66,7 +66,7 @@ class Formatter:
     }
 
     th {
-        background-color: #00bfa5;
+        background-color: #007acc;
         color: white;
     }
 
@@ -101,7 +101,7 @@ class Formatter:
         <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
         <div style="text-align: left; margin-bottom: 20px;">
-        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {running_data['streak']} Days</h2>
+        <h2 style="font-weight: bold; color: #007acc;">Streak: {running_data['streak']} Days</h2>
     </div>
         <table style="width:100%; border-collapse: collapse; text-align: left;">
             <tr>
