@@ -98,12 +98,18 @@ class Formatter:
         padding: 15px;
         border-top: 1px solid #007acc;
         margin-top: 30px;
+        margin: 15px auto 0;
+        display: block;
         }
+    
     .footer img {
         max-width: 100%;
         height: auto;
         margin-top: 15px;
+        margin: 15px auto 0;
+        display: block;
         }
+    
     .profile-img {
         border-radius: 50%;
         margin-right: 20px;
@@ -116,9 +122,9 @@ class Formatter:
         display: block;
         margin: 0 auto 10px auto;
         border-radius: 50%;
-        border: 10px solid #007acc;
-        width: 50px;
-        height: 50px;
+        border: 2px solid #007acc;
+        width: 80px;
+        height: 80px;
         }
         </style>"""
 
