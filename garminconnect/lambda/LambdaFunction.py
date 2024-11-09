@@ -17,11 +17,12 @@ mongo_instance = MongoUtils()
 
 def main():
     help = Helper()
-    status_mongo = mongo_instance.find_by_query(
+    query = {"date": help.sync_date, "isUpdated": True}
+    status_mongo = mongo_instance.find_records_by_query(
         collection_name="garmin_status",
-        query={"date": help.sync_date, "isUpdated": True},
+        query=query,
     )
-    logger.info(f"Sync Status: {status_mongo}")
+    logger.info(f"Is Executed: {status_mongo}")
     if not status_mongo:
         logger.info(f"Starting Execution")
         help.send_data()
@@ -31,12 +32,11 @@ def main():
         logger.info("Already Executed")
         return {"statusCode": 200, "status": "Already executed"}
 
-
 def LambdaHandler(event, context):
     try:
         response = main()
         return {"statusCode": 200, "body": json.dumps(response)}
-    except (NoRunningError, NoSleepError, NoBodyStatsError) as e:
+    except NoDataError as e:
         logger.error(e.msg)
         telegram_instance.send_plain_message(
             chat_id=os.environ["TelegramChatId"], text=e.msg

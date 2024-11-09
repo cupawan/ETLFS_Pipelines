@@ -6,14 +6,14 @@ class Formatter:
     def __init__(self):
         pass
 
-    def running_html(self, running_data, metadata):
+    def running_html(self, running_data):
         return f"""
         <h3 class="section-title">Running ({running_data['formatted_date']})</h3> 
         <div style="text-align: center; margin-bottom: 20px;">
-        <img src="{metadata['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
         <div style="text-align: left; margin-bottom: 20px;">
-        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {metadata['streak']} Days</h2>
+        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {running_data['streak']} Days</h2>
     </div>
         <table style="width:100%; border-collapse: collapse; text-align: left;">
             <tr>
@@ -82,16 +82,16 @@ class Formatter:
             </tr>
             <tr>
                 <td style="padding: 8px;"><strong>Shoes</strong></td>
-                <td style="padding: 8px;">{metadata['gear']}</td>
+                <td style="padding: 8px;">{running_data['gear']}</td>
             </tr>
         </table>
         """
 
-    def running_text(self, running_data, metadata):
+    def running_text(self, running_data):
         return f"""
 Running ({running_data['formatted_date']})
 =========================
-Streak: {metadata['streak']} Days
+Streak: {running_data['streak']} Days
 {running_data['activity_name']}
 {running_data['formatted_start_time']}
 Distance: {running_data['distance']:.2f} kms
@@ -107,7 +107,7 @@ Stride Length: {running_data['stride_length']} m
 Training Effect: {running_data['training_effect']}
 Training Load: {running_data['training_load']}
 Ground Contact Time: {running_data['ground_contact_time']}
-Shoes: {metadata['gear']}
+Shoes: {running_data['gear']}
 """
 
     def sleep_html(self, sleep_data):
@@ -186,9 +186,16 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             print(summary_message)
         return summary_message
 
-    def garminMainEmailFormatter(
-        self, running_html, sleep_html, body_stats_html, metadata
-    ):
+    def garminMainEmailFormatter(self, html_body):
+        header_div = None
+        if html_body.get("profile_image") and html_body.get("user_name"):
+            header_div = f"""<div class="header">
+                    <img src="{html_body['profile_image']}" class="profile-img" width="100" height="100">
+                    <div>
+                        <h1>Garmin Statistics</h1>
+                        <p><b>{html_body['user_name']}</b></p>
+                    </div>
+                </div>""" 
         html_content = f"""
             <html>
             <head>
@@ -304,22 +311,13 @@ Restlessness Level: {sleep_data['Restlessness Level']}
 
             </head>
             <body>
-                <div class="header">
-                    <img src="{metadata['profile_image']}" class="profile-img" width="100" height="100">
-                    <div>
-                        <h1>Garmin Statistics</h1>
-                        <p><b>{metadata['user_name']}</b></p>
-                    </div>
-                </div>
-
+            {header_div}
                 <div class="summary">
-                {running_html}
-                {sleep_html}
-                {body_stats_html}
+                {html_body}
                 <div class="footer">
             <p></p>
-            <img src="{metadata['device_image']}" class="profile-img" width="15" height="15">
-            <p>Uploaded From: <b>{metadata['device_name']}</b></p>
+            <img src="{html_body['device_image']}" class="profile-img" width="15" height="15">
+            <p>Uploaded From: <b>{html_body['device_name']}</b></p>
         </div>
     </body>
     </html>

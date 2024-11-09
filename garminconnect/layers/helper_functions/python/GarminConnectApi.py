@@ -20,6 +20,7 @@ class GarminAPI:
         self.today_c_date = self.today.strftime("%Y-%m-%d")
         self.yesterday = self.today - timedelta(days = 1)
         self.yesterday_c_date = self.yesterday.strftime("%Y-%m-%d")
+        self.device_name, self.device_image = self.getPrimaryTrainingDevice()
         self.utils = CommonUtils()
         
     def setUpGarmin(self):
@@ -73,7 +74,7 @@ class GarminAPI:
             sleep_start = datetime.datetime.fromtimestamp(sleep_start_ts).astimezone(ist).strftime("%H:%M")
             sleep_end = datetime.datetime.fromtimestamp(sleep_end_ts).astimezone(ist).strftime("%H:%M")
             sleep_dict = {
-                'formatted_date': formatted_date,'total_time' : self.utils.seconds_to_hm(total_sleep_seconds),'from_' : sleep_start,'to_' : sleep_end,'sleep_score' : f"{sleep_score}/100",'quality' : total_duration,'REM_Quality' : rem_percentage,'REM_Time' : self.utils.seconds_to_hm(rem_seconds),'REM_Score' : rem_value,'REM_Optimal' : f"{rem_start}-{rem_end}",'Light_Quality' : light_percentage,'Light_Time' : self.utils.seconds_to_hm(light_seconds),'Light_Score' : light_value,'Light_Optimal' : f"{light_start}-{light_end}",'Deep_Quality' : deep_percentage,'Deep_Time' : self.utils.seconds_to_hm(deep_seconds),'Deep_Score' : deep_value,'Deep_Optimal' : f"{deep_start}-{deep_end}",'Awake_Quality' : awake_count,"Awake_Time" : self.utils.seconds_to_hm(awake_seconds),"Awake_Score" : awake_value,"Awake_Optimal" : f"{awake_start}-{awake_end}","Average_Sleep_Stress" : int(avg_sleep_stress),"Body Battery Change" : body_battery_change,"Resting Heart Rate" : resting_heartrate,"Restlessness Level" : restlessness,"Restless moments" : restless_moments_count,"Sleep Feedback" : feedback.title().replace('_',' ')
+                'formatted_date': formatted_date,'total_time' : self.utils.seconds_to_hm(total_sleep_seconds),'from_' : sleep_start,'to_' : sleep_end,'sleep_score' : f"{sleep_score}/100",'quality' : total_duration,'REM_Quality' : rem_percentage,'REM_Time' : self.utils.seconds_to_hm(rem_seconds),'REM_Score' : rem_value,'REM_Optimal' : f"{rem_start}-{rem_end}",'Light_Quality' : light_percentage,'Light_Time' : self.utils.seconds_to_hm(light_seconds),'Light_Score' : light_value,'Light_Optimal' : f"{light_start}-{light_end}",'Deep_Quality' : deep_percentage,'Deep_Time' : self.utils.seconds_to_hm(deep_seconds),'Deep_Score' : deep_value,'Deep_Optimal' : f"{deep_start}-{deep_end}",'Awake_Quality' : awake_count,"Awake_Time" : self.utils.seconds_to_hm(awake_seconds),"Awake_Score" : awake_value,"Awake_Optimal" : f"{awake_start}-{awake_end}","Average_Sleep_Stress" : int(avg_sleep_stress),"Body Battery Change" : body_battery_change,"Resting Heart Rate" : resting_heartrate,"Restlessness Level" : restlessness,"Restless moments" : restless_moments_count,"Sleep Feedback" : feedback.title().replace('_',' '), 'device_name': self.device_name, 'device_image': self.device_image
                 }
             logger.info("Generated Sleep Statistics Data Successfully")
             return sleep_dict
@@ -154,49 +155,56 @@ class GarminAPI:
         return data
     
     def getRunningData(self):
-        d = defaultdict(lambda:0)
+        running_data = defaultdict(lambda:0)
         metadata = defaultdict(lambda:0)
         logger.info("Fetching Running Data")
-        data = self.getActivitiesForDate(self.today_c_date)
-        if not data:
-            raise KeyError
+        try:
+            data = self.getActivitiesForDate(self.today_c_date)
+        except Exception as e:
+            msg = f"Unable to Fetch Data: {str(e)}"
+            logger.error(msg)
+            raise NoDataError(msg)
         metadata['device_name'] = self.getPrimaryTrainingDevice()[0]
         metadata['device_image'] = self.getPrimaryTrainingDevice()[1]
+        metadata['running_streak'] = self.getRunningStreak()
+        metadata['map_url'] = self.getMapImage()
         for i in data['ActivitiesForDay']['payload']:
             if i['activityType']['typeKey'] == "running":
-                activity_id = i['activityId']
-                data = self.getActivityById(activity_id)
+                running_data["activity_id"] = i['activityId']
+                data = self.getActivityById(i['activityId'])
                 metadata['profile_image'] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
                 metadata['user_name'] = data['metadataDTO']['userInfoDto']['fullname']
                 metadata['location_name'] = data.get('locationName', 'Unknown Location')
-                metadata['gear'] = self.getGearForActivityId(activity_id=activity_id)
-                d["activity_name"] = data['activityName']
-                d["activity_type"] = data['activityTypeDTO']['typeKey'].title()
-                d["user_name"] = data['metadataDTO']['userInfoDto']['fullname']
-                d["profile_image"] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
-                d["location_name"] = data.get('locationName', 'Unknown Location')
+                metadata['gear'] = self.getGearForActivityId(activity_id=i['activityId'])
+                running_data["activity_name"] = data['activityName']
+                running_data["activity_type"] = data['activityTypeDTO']['typeKey'].title()
+                running_data["user_name"] = data['metadataDTO']['userInfoDto']['fullname']
+                running_data["profile_image"] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
+                running_data["location_name"] = data.get('locationName', 'Unknown Location')
                 start_time = data['summaryDTO'].get('startTimeLocal', None)
-                d["formatted_start_time"] = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f").strftime("%a, %d %b %Y at %H:%M %p") if start_time else "Unknown Time"
-                d["formatted_date"] = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f").strftime("%a, %d %b %y") if start_time else "Unknown Date"
-                d["distance"] = data['summaryDTO'].get('distance', 0) / 1000
-                d["duration"] = self.utils.seconds_to_hm(data['summaryDTO'].get('duration', 0))
-                d["avg_pace"] = CommonUtils().convert_speed_mps_to_minkm(data['summaryDTO'].get('averageSpeed', 0))
-                d["max_pace"] = CommonUtils().convert_speed_mps_to_minkm(data['summaryDTO'].get('maxSpeed', 0))
-                d["calories"] = data['summaryDTO'].get('calories', 0)
-                d["avg_hr"] = data['summaryDTO'].get('averageHR', 0)
-                d["max_hr"] = data['summaryDTO'].get('maxHR', 0)
-                d["avg_cadence"] = int(data['summaryDTO'].get('averageRunCadence', 0))
-                d["max_cadence"] = int(data['summaryDTO'].get('maxRunCadence', 0))
-                d["training_effect"] = data['summaryDTO'].get('trainingEffectLabel', "Not Available")
-                d["ground_contact_time"] = round(data['summaryDTO'].get('groundContactTime',0),1)
-                d['stride_length'] = round(data['summaryDTO'].get('strideLength',0)/100,2)
-                d['verticalRatio'] = data['summaryDTO'].get('verticalRatio',0)
-                d['training_load'] = round(data['summaryDTO']['activityTrainingLoad'],2)
-                d['is_PR'] = data['metadataDTO']['personalRecord']
-                return d, metadata, activity_id
+                running_data["formatted_start_time"] = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f").strftime("%a, %d %b %Y at %H:%M %p") if start_time else "Unknown Time"
+                running_data["formatted_date"] = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f").strftime("%a, %d %b %y") if start_time else "Unknown Date"
+                running_data["distance"] = data['summaryDTO'].get('distance', 0) / 1000
+                running_data["duration"] = self.utils.seconds_to_hm(data['summaryDTO'].get('duration', 0))
+                running_data["avg_pace"] = CommonUtils().convert_speed_mps_to_minkm(data['summaryDTO'].get('averageSpeed', 0))
+                running_data["max_pace"] = CommonUtils().convert_speed_mps_to_minkm(data['summaryDTO'].get('maxSpeed', 0))
+                running_data["calories"] = data['summaryDTO'].get('calories', 0)
+                running_data["avg_hr"] = data['summaryDTO'].get('averageHR', 0)
+                running_data["max_hr"] = data['summaryDTO'].get('maxHR', 0)
+                running_data["avg_cadence"] = int(data['summaryDTO'].get('averageRunCadence', 0))
+                running_data["max_cadence"] = int(data['summaryDTO'].get('maxRunCadence', 0))
+                running_data["training_effect"] = data['summaryDTO'].get('trainingEffectLabel', "Not Available")
+                running_data["ground_contact_time"] = round(data['summaryDTO'].get('groundContactTime',0),1)
+                running_data['stride_length'] = round(data['summaryDTO'].get('strideLength',0)/100,2)
+                running_data['verticalRatio'] = data['summaryDTO'].get('verticalRatio',0)
+                running_data['training_load'] = round(data['summaryDTO']['activityTrainingLoad'],2)
+                running_data['is_PR'] = data['metadataDTO']['personalRecord']
+                running_data.update(metadata)
+                return running_data
             else:
-                logger.error("[Running]: No Running Data Found")
-                raise NoRunningError()
+                msg = "No Running activity has been recorded yet"
+                logger.error(msg)
+                raise NoDataError(msg)
 
     def getRunningStreak(self, streakStart= "2024-8-1"):
         logger.info("Fetching Run Streak")
@@ -213,13 +221,12 @@ class GarminAPI:
             if run_date == current_date:
                 streak += 1
             elif run_date == current_date - datetime.timedelta(days=1):
-                day_flag = True
                 streak += 1
                 current_date -= datetime.timedelta(days=1)
             else:
                 break
         logger.info(f"Your Run Streak is {streak} Days.")
-        return streak, day_flag
+        return streak
            
     def getPrimaryTrainingDevice(self):
         device = self.api.get_primary_training_device()
