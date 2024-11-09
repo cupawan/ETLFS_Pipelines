@@ -91,38 +91,35 @@ class Formatter:
     .greeting h3, .greeting p {
         margin: 0;
     }
-    footer {{
+    footer {
         text-align: center;
         color: #888;
         font-size: 0.85em;
         padding: 15px;
         border-top: 1px solid #b48646;
         margin-top: 30px;
-        }}
-    .footer img {{
+        }
+    .footer img {
         max-width: 100%;
         height: auto;
         margin-top: 15px;
-        }}
-    .profile-img {{
+        }
+    .profile-img {
         border-radius: 50%;
         margin-right: 20px;
         border: 10px solid #b48646;
         width: 80px;
         height: 80px;
-        }}
+        }
     
-    .device-img {{
+    .device-img {
         border-radius: 50%;
         margin-right: 20px;
         border: 10px solid #b48646;
         width: 40px;
         height: 40px;
-        }}
-
-
-</style>
-"""
+        }
+        </style>"""
 
     def running_html(self, running_data):
         return f"""
