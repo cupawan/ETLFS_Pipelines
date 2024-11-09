@@ -91,6 +91,36 @@ class Formatter:
     .greeting h3, .greeting p {
         margin: 0;
     }
+    footer {{
+        text-align: center;
+        color: #888;
+        font-size: 0.85em;
+        padding: 15px;
+        border-top: 1px solid #b48646;
+        margin-top: 30px;
+        }}
+    .footer img {{
+        max-width: 100%;
+        height: auto;
+        margin-top: 15px;
+        }}
+    .profile-img {{
+        border-radius: 50%;
+        margin-right: 20px;
+        border: 10px solid #b48646;
+        width: 80px;
+        height: 80px;
+        }}
+    
+    .device-img {{
+        border-radius: 50%;
+        margin-right: 20px;
+        border: 10px solid #b48646;
+        width: 40px;
+        height: 40px;
+        }}
+
+
 </style>
 """
 
@@ -276,7 +306,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
 
     def garminMainEmailFormatter(self, data, html_body):
         header_div = f"""<div class="header">
-                <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
+                <img src="{data['profile_image']}" class="profile-img" width="80" height="80">
                 <div>
                     <h1>Garmin Statistics</h1>
                     <p><b>{data['user_name']}</b></p>
@@ -293,7 +323,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 {html_body}
                 <div class="footer">
             <p></p>
-            <img src="{data['device_image']}" class="profile-img" width="15" height="15">
+            <img src="{data['device_image']}" class="device-img" width="15" height="15">
             <p>Uploaded From: <b>{data['device_name']}</b></p>
         </div>
     </body>
