@@ -214,14 +214,14 @@
         ]
       }
     },
-    "ScheduledRule": {
+    "ScheduledRuleForSleep": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "Name": {
-          "Fn::Sub": "${ApplicationName}-${SourceName}-eventrule-${Env}"
+          "Fn::Sub": "${ApplicationName}-${SourceName}-sleep-eventrules-${Env}"
         },
-        "Description": "ScheduledRule",
-        "ScheduleExpression": "cron(30 3 * * ? *)",
+        "Description": "Triggers the event every day at 7 AM UTC.",
+        "ScheduleExpression": "cron(30 1 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -234,7 +234,27 @@
       },
       "DependsOn": "LambdaFunction"
     },
-    "PermissionForEventsToInvokeLambda": {
+    "ScheduledRuleForRun": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "${ApplicationName}-${SourceName}-run-eventrules-${Env}"
+        },
+        "Description": "Triggers the event every day at 8 AM UTC.",
+        "ScheduleExpression": "cron(30 2 * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": ["LambdaFunction", "Arn"]
+            },
+            "Id": "LambdaFunction"
+          }
+        ]
+      },
+      "DependsOn": "LambdaFunction"
+    },
+    "InvokePermissionForSleepEventsRule": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
@@ -243,7 +263,21 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "events.amazonaws.com",
         "SourceArn": {
-          "Fn::GetAtt": ["ScheduledRule", "Arn"]
+          "Fn::GetAtt": ["ScheduledRuleForSleep", "Arn"]
+        }
+      },
+      "DependsOn": "LambdaFunction"
+    },
+    "InvokePermissionForRunEventsRule": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LambdaFunction"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": ["ScheduledRuleForRun", "Arn"]
         }
       },
       "DependsOn": "LambdaFunction"
