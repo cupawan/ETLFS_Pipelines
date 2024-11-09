@@ -175,16 +175,135 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 <tr><th>Blood Oxygen (SpO2)</th><td>{body_stats_data['Blood Oxygen (SpO2)']}</td></tr>
             </table>
             """
+    def formatStravaActivityHtml2(self, activity_data):
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+        average_temp = activity_data.get("average_temp", 0)
+        calories = activity_data.get("kilojoules", 0)
+        formatted_start_date = datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity Summary</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    padding: 20px;
+                }}
+                .container {{
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }}
+                .header {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                    padding: 10px;
+                    text-align: center;
+                    font-size: 24px;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }}
+                th {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                }}
+                .highlight {{
+                    font-weight: bold;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
+                </div>
+                <div class="content">
+                    <table>
+                        <tr>
+                            <th colspan="2">Activity Details</th>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Activity Name:</td>
+                            <td>{name}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Distance:</td>
+                            <td>{distance / 1000:.2f} km</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Moving Time:</td>
+                            <td>{CommonUtils().seconds_to_hm(moving_time)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Start Date:</td>
+                            <td>{formatted_start_date}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Speed:</td>
+                            <td>{CommonUtils().convert_speed_mps_to_minkm(average_speed)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Max Speed:</td>
+                            <td>{CommonUtils().convert_speed_mps_to_minkm(max_speed)}</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Heartrate:</td>
+                            <td>{average_heartrate} BPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Max Heartrate:</td>
+                            <td>{max_heartrate} BPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Cadence:</td>
+                            <td>{cadence} SPM</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Average Temp:</td>
+                            <td>{average_temp} °C</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">Calories:</td>
+                            <td>{calories}</td>
+                        </tr>
+                    </table>
+                    <p style="text-align: center; color: #888888;">This email was generated automatically.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
 
-    def garminSleepFormatterForTelegram(self, d) -> str:
-        try:
-            summary_message = summary_message = (
-                f"""{d['formatted_date']}\n\nSleep Statistics\nYou slept for {d['total_time']}, from {d['from_']} to {d['to_']}\nScore: {d['sleep_score']} ({d['quality']})\n\nREM Sleep: {d['REM_Quality']}\n\t\t\t\t{d['REM_Time']}\n\t\t\t\tScore: {d['REM_Score']} [Optimal: ({d['REM_Optimal']})\n\nLight Sleep: {d['Light_Quality']}\n\t\t\t\t{d['Light_Time']}\n\t\t\t\tScore: {d['Light_Score']} [Optimal: ({d['Light_Optimal']})]\n\nDeep Sleep: {d['Deep_Quality']}\n\t\t\t\t{d['Deep_Time']}\n\t\t\t\tScore: {d['Deep_Score']} [Optimal: ({d['Deep_Optimal']})]\n\nAwake: {d['Awake_Quality']}\n\t\t\t\t{d['Awake_Time']}\n\t\t\t\tScore: {d['Awake_Score']} [Optimal: ({d['Awake_Optimal']})]\n\nAverage Sleep Stress: {d["Average_Sleep_Stress"]}\nBody Battery Change: {d['Body Battery Change']}\nResting Heart Rate: {d['Resting Heart Rate']}\nRestlessness Level: {d['Restlessness Level']}\nRestless moments: {d['Restless moments']}\nSleep Feedback: {d["Sleep Feedback"]}"""
-            )
-        except Exception as e:
-            summary_message = f"No Sleep Data in Garmin: {e}"
-            print(summary_message)
-        return summary_message
+        return html_content
+
 
     def garminMainEmailFormatter(self, data, html_body):
         header_div = f"""<div class="header">
