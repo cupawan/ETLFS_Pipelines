@@ -4,138 +4,16 @@ from DatetimeUtils import CommonUtils
 
 class Formatter:
     def __init__(self):
-        self.style = """<style>
-    body {
-        font-family: Arial, sans-serif;
-        color: #333;
-        background-color: #f7f7f7;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h1, h2, h3 {
-        color: #007acc;
-        font-weight: bold;
-        margin-top: 0;
-    }
-
-    .header, .greeting, .weather-card, .data-table {
-        margin-bottom: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-    }
-
-    .header img.profile-img {
-        border-radius: 50%;
-        margin-right: 15px;
-    }
-
-    .weather-header, .weather-card h3, .data-table th {
-        background-color: #007acc;
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-        border-radius: 5px 5px 0 0;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-    }
-
-    th, td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-
-    th {
-        background-color: #007acc;
-        color: white;
-    }
-
-    .temp, .wind, .uv-index, .summary, .score {
-        font-weight: bold;
-        color: #333;
-    }
-
-    .weather-details, .data-table td {
-        text-align: center;
-        font-size: 14px;
-    }
-
-    .data-table {
-        background-color: #f9f9f9;
-    }
-
-    .data-table th, .data-table td {
-        border: 1px solid #ccc;
-    }
-
-    .greeting h3, .greeting p {
-        margin: 0;
-    }
-    footer {
-        text-align: center;
-        color: #888;
-        font-size: 0.85em;
-        padding: 15px;
-        border-top: 1px solid #007acc;
-        margin-top: 30px;
-        margin: 15px auto 0;
-        display: block;
-        }
-    
-    .footer img {
-        max-width: 100%;
-        height: auto;
-        margin-top: 15px;
-        margin: 15px auto 0;
-        display: block;
-        }
-    
-    .profile-img {
-        border-radius: 50%;
-        margin-right: 20px;
-        border: 2px solid #007acc;
-        width: 80px;
-        height: 80px;
-        }
-
-    .footer img.device-img {
-        display: block;
-        margin: 0 auto 10px auto;
-        border-radius: 50%;
-        border: 2px solid #007acc;
-        width: 80px;
-        height: 80px;
-        }
-        </style>"""
+        pass
 
     def running_html(self, running_data):
         return f"""
-        <h3 class="weather-header"">Running ({running_data['formatted_date']})</h3> 
+        <h3 class="section-title">Running ({running_data['formatted_date']})</h3> 
         <div style="text-align: center; margin-bottom: 20px;">
         <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
         <div style="text-align: left; margin-bottom: 20px;">
-        <h2 style="font-weight: bold; color: #007acc;">Streak: {running_data['streak']} Days</h2>
+        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {running_data['streak']} Days</h2>
     </div>
         <table style="width:100%; border-collapse: collapse; text-align: left;">
             <tr>
@@ -234,7 +112,7 @@ Shoes: {running_data['gear']}
 
     def sleep_html(self, sleep_data):
         return f"""
-            <h3 class="weather-header"">Sleep ({sleep_data['formatted_date']})</h3>
+            <h3 class="section-title">Sleep ({sleep_data['formatted_date']})</h3>
             <table class="data-table">
                 <tr><th>Overall Sleep Summary</th></tr>
                 <tr><td>You slept for {sleep_data['total_time']}, from {sleep_data['from_']} to {sleep_data['to_']}</td></tr>
@@ -310,7 +188,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
 
     def garminMainEmailFormatter(self, data, html_body):
         header_div = f"""<div class="header">
-                <img src="{data['profile_image']}" class="profile-img" width="80" height="80">
+                <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
                 <div>
                     <h1>Garmin Statistics</h1>
                     <p><b>{data['user_name']}</b></p>
@@ -319,18 +197,128 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content = f"""
             <html>
             <head>
-            {self.style}
+                    <style>
+            body {{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #242424;
+                color: #d1d1d1;
+                padding: 20px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }}
+            .header {{
+                display: flex;
+                align-items: center;
+                margin-bottom: 30px;
+            }}
+            .profile-img {{
+                border-radius: 50%;
+                margin-right: 20px;
+                border: 3px solid #444;
+                width: 80px;
+                height: 80px;
+            }}
+            .summary {{
+                background-color: #242424;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                margin-bottom: 30px;
+                border: 1px solid #444;
+                color: #d1d1d1;
+            }}
+            .summary span {{
+                font-weight: bold;
+                color: #00bfa5;
+            }}
+            .data-table {{
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px;
+            }}
+            th, td{{
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #444;
+                color: #cfd8dc;
+            }}
+            th {{
+                background-color: #333;
+                color: #00bfa5;
+                font-size: 1.1em;
+                letter-spacing: 0.5px;
+            }}
+            td {{
+                background-color: #202020;
+                font-size: 0.95em;
+            }}
+            .section-title {{
+                font-size: 1.6em;
+                margin-bottom: 15px;
+                color: #00bfa5;
+                font-weight: bold;
+                letter-spacing: 0.5px;
+            }}
+            .footer {{
+                text-align: center;
+                color: #888;
+                font-size: 0.85em;
+                padding: 15px;
+                border-top: 1px solid #444;
+                margin-top: 30px;
+            }}
+            .footer img {{
+                max-width: 100%;
+                height: auto;
+                margin-top: 15px;
+            }}
+            a {{
+                color: #00bfa5;
+                text-decoration: none;
+            }}
+            a:hover {{
+                text-decoration: underline;
+            }}
+            button {{
+                background-color: #00bfa5;
+                color: #181818;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                transition: background-color 0.3s ease;
+            }}
+            button:hover {{
+                background-color: #009688;
+            }}
+            .additional-details p {{
+                font-size: 0.9em;
+                color: #b0bec5;
+                margin-bottom: 10px;
+            }}
+            /* Animation for hover effects */
+            th, td {{
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }}
+            tr:hover td {{
+                background-color: #333;
+                color: #fff;
+            }}
+        </style>
+
             </head>
             <body>
             {header_div}
-                <div class="container">
+                <div class="summary">
                 {html_body}
                 <div class="footer">
-                <img src="{data['device_image']}" class="device-img" width="15" height="15">
-                <p>Uploaded From: <b>{data['device_name']}</b></p>
-                </div>
-                </body>
-                </html>
+            <p></p>
+            <img src="{data['device_image']}" class="profile-img" width="15" height="15">
+            <p>Uploaded From: <b>{data['device_name']}</b></p>
+        </div>
+    </body>
+    </html>
     """
         return html_content
 
@@ -734,21 +722,61 @@ Restlessness Level: {sleep_data['Restlessness Level']}
             start_date, "%Y-%m-%dT%H:%M:%SZ"
         ).strftime("%Y-%m-%d %H:%M:%S")
         html_content = f"""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strava Activity Summary</title>
-    {self.style}
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>Strava Activity Summary</h2>
-            <h2>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</h2>
-        </div>
-        <div class="content">
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity Summary</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    padding: 20px;
+                }}
+                .container {{
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }}
+                .header {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                    padding: 10px;
+                    text-align: center;
+                    font-size: 24px;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }}
+                th {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                }}
+                .highlight {{
+                    font-weight: bold;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                Strava Activity Summary<br>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}
+                </div>
+                <div class="content">
                     <table>
                         <tr>
                             <th colspan="2">Activity Details</th>
@@ -808,12 +836,33 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         return html_content
     
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
-        html_content = f'''<html>
+        html_content = '''<html>
         <head>
-        {self.style}
+        <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f8ff; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; }
+        .weather-card { border: 1px solid #ccc; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
+        .weather-header { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .weather-details { margin-left: 15px; }
+        .weather-details p { margin: 5px 0; }
+        .weather-details ul { list-style-type: none; padding: 0; }
+        .weather-details ul li { margin-bottom: 5px; }
+        .summary { color: #1e90ff; font-weight: bold; }
+        .temp { color: #2e8b57; }
+        .sunrise-sunset { color: #ffa500; }
+        .wind { color: #4682b4; }
+        .uv-index { color: #ff6347; }
+        .greeting { background-color: #1e90ff; color: #fff; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:nth-child(odd) { background-color: #fff; }
+        </style>
         </head>
         <body>
         '''
+
         html_content += f'''<div class="container">
         <div class="greeting">
         <h2 style="margin-top: 0;">Weather Report</h2>
@@ -821,6 +870,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         <p>Weather Forecast for Today at<br><b>{str(location).title()}</b></p>
         </div>
         '''
+
         html_content += '<div class="weather-card">\n'
         html_content += f'<div class="weather-header">{CommonUtils().timestamp_to_date(data_list["dt"])}</div>\n'
         html_content += '<div class="weather-details">\n'
@@ -857,8 +907,10 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content += '</table>\n'
         html_content += '</div>\n'
         html_content += '</div>\n'
+
         html_content += '''<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>'''
         html_content += '</div>\n'
         html_content += '</body>\n</html>'
+
         return html_content
 
