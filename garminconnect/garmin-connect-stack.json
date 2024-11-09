@@ -92,6 +92,9 @@
     "GarminProfileImageValue": {
       "Type": "String",
       "NoEcho": "true"
+    },
+    "GarminRunSchedule": {
+      "Type": "String"
     }
   },
   "Resources": {
@@ -192,6 +195,9 @@
             },
             "GarminProfileImage": {
               "Ref": "GarminProfileImageValue"
+            },
+            "RunHour": {
+              "Ref": "GarminRunSchedule"
             }
           }
         },

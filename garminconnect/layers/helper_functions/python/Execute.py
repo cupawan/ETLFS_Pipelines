@@ -2,6 +2,7 @@ import os
 import pytz
 import datetime
 import logging
+from collections import defaultdict
 from TelegramUtils import TelegramMessage
 from GarminConnectApi import GarminAPI
 from FormattingUtils import Formatter
@@ -22,7 +23,20 @@ class Helper:
         self.mongo_instance = MongoUtils()
         self.format_instance = Formatter()
         self.chat_id = os.environ['TelegramChatId']
-        self.type_statistics_dict = {"12": (self.garmin_instance.getSleepStats, self.format_instance.sleep_html, "garmin_sleep_statistics"), "8": (self.garmin_instance.getRunningData, self.format_instance.running_html, "garmin_running_statistics")}
+        self.type_statistics_dict = defaultdict(
+            lambda: (
+                self.garmin_instance.getSleepStats,
+                self.format_instance.sleep_html,
+                "garmin_sleep_statistics"
+                ),
+            {
+            os.environ['RunHour']: (
+                self.garmin_instance.getRunningData,
+                self.format_instance.running_html,
+                "garmin_running_statistics"
+                )
+            }
+            )
     
     def _send_telegram_text(self, msg_body):       
         logger.info("Sending text message via Telegram")
