@@ -4,56 +4,99 @@ from DatetimeUtils import CommonUtils
 
 class Formatter:
     def __init__(self):
-        self.head = """
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                color: #333;
-                line-height: 1.6;
-                margin: 0;
-                padding: 0;
-            }
-            .section-title {
-                font-size: 1.8em;
-                font-weight: bold;
-                color: #00bfa5;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .centered-image {
-                max-width: 100%;
-                height: auto;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                display: block;
-                margin: 0 auto 20px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-            .highlight {
-                font-weight: bold;
-                color: #00bfa5;
-                text-align: center;
-            }
-            .stats-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-            }
-            .stats-table th, .stats-table td {
-                padding: 8px;
-                border-bottom: 1px solid #ddd;
-                text-align: left;
-            }
-            .stats-table th {
-                background-color: #f9f9f9;
-                font-weight: bold;
-            }
-        </style>
-        """
+        self.style = """<style>
+    body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+        color: #00bfa5;
+        font-weight: bold;
+        margin-top: 0;
+    }
+
+    .header, .greeting, .weather-card, .data-table {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+    }
+
+    .header img.profile-img {
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+
+    .weather-header, .weather-card h3, .data-table th {
+        background-color: #00bfa5;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px 5px 0 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    th, td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #00bfa5;
+        color: white;
+    }
+
+    .temp, .wind, .uv-index, .summary, .score {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .weather-details, .data-table td {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .data-table {
+        background-color: #f9f9f9;
+    }
+
+    .data-table th, .data-table td {
+        border: 1px solid #ccc;
+    }
+
+    .greeting h3, .greeting p {
+        margin: 0;
+    }
+</style>
+"""
 
     def running_html(self, running_data):
         return f"""
-        <h3 class="section-title">Running ({running_data['formatted_date']})</h3> 
+        <h3 class="weather-header"">Running ({running_data['formatted_date']})</h3> 
         <div style="text-align: center; margin-bottom: 20px;">
         <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
@@ -157,7 +200,7 @@ Shoes: {running_data['gear']}
 
     def sleep_html(self, sleep_data):
         return f"""
-            <h3 class="section-title">Sleep ({sleep_data['formatted_date']})</h3>
+            <h3 class="weather-header"">Sleep ({sleep_data['formatted_date']})</h3>
             <table class="data-table">
                 <tr><th>Overall Sleep Summary</th></tr>
                 <tr><td>You slept for {sleep_data['total_time']}, from {sleep_data['from_']} to {sleep_data['to_']}</td></tr>
@@ -242,11 +285,11 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content = f"""
             <html>
             <head>
-            {self.head}
+            {self.script}
             </head>
             <body>
             {header_div}
-                <div class="summary">
+                <div class="container">
                 {html_body}
                 <div class="footer">
             <p></p>
@@ -733,11 +776,10 @@ Restlessness Level: {sleep_data['Restlessness Level']}
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
         html_content = f'''<html>
         <head>
-        {self.head}
+        {self.script}
         </head>
         <body>
         '''
-
         html_content += f'''<div class="container">
         <div class="greeting">
         <h2 style="margin-top: 0;">Weather Report</h2>
@@ -745,7 +787,6 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         <p>Weather Forecast for Today at<br><b>{str(location).title()}</b></p>
         </div>
         '''
-
         html_content += '<div class="weather-card">\n'
         html_content += f'<div class="weather-header">{CommonUtils().timestamp_to_date(data_list["dt"])}</div>\n'
         html_content += '<div class="weather-details">\n'
@@ -782,10 +823,8 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         html_content += '</table>\n'
         html_content += '</div>\n'
         html_content += '</div>\n'
-
         html_content += '''<p> Have a nice day! </p><p> <em> Location not correct? Reply to this mail with correct location. </em> </p>'''
         html_content += '</div>\n'
         html_content += '</body>\n</html>'
-
         return html_content
 
