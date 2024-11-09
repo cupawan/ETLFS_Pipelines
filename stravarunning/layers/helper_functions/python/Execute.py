@@ -27,5 +27,5 @@ class Helper:
         old = self.getOldActivity(id)
         new_message = self.format.formatStravaActivityHtml2(activity_data=new)
         old_message = (self.format.formatStravaActivityHtml2(activity_data=old) if old else None)
-        old_message = old_message.replace("<h1>Strava Activity Summary</h1>","<h3>Similar Run from Last Streak</h3>") if old_message else ""
+        old_message = old_message.replace("Strava Activity Summary","Similar Run from Last Streak") if old_message else ""
         return new_message + old_message

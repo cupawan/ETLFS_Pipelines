@@ -5,7 +5,7 @@ from DatetimeUtils import CommonUtils
 class Formatter:
     def __init__(self):
         pass
-    
+
     def running_html(self, running_data):
         return f"""
         <h3 class="section-title">Running ({running_data['formatted_date']})</h3> 
@@ -175,6 +175,537 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 <tr><th>Blood Oxygen (SpO2)</th><td>{body_stats_data['Blood Oxygen (SpO2)']}</td></tr>
             </table>
             """
+
+    def garminSleepFormatterForTelegram(self, d) -> str:
+        try:
+            summary_message = summary_message = (
+                f"""{d['formatted_date']}\n\nSleep Statistics\nYou slept for {d['total_time']}, from {d['from_']} to {d['to_']}\nScore: {d['sleep_score']} ({d['quality']})\n\nREM Sleep: {d['REM_Quality']}\n\t\t\t\t{d['REM_Time']}\n\t\t\t\tScore: {d['REM_Score']} [Optimal: ({d['REM_Optimal']})\n\nLight Sleep: {d['Light_Quality']}\n\t\t\t\t{d['Light_Time']}\n\t\t\t\tScore: {d['Light_Score']} [Optimal: ({d['Light_Optimal']})]\n\nDeep Sleep: {d['Deep_Quality']}\n\t\t\t\t{d['Deep_Time']}\n\t\t\t\tScore: {d['Deep_Score']} [Optimal: ({d['Deep_Optimal']})]\n\nAwake: {d['Awake_Quality']}\n\t\t\t\t{d['Awake_Time']}\n\t\t\t\tScore: {d['Awake_Score']} [Optimal: ({d['Awake_Optimal']})]\n\nAverage Sleep Stress: {d["Average_Sleep_Stress"]}\nBody Battery Change: {d['Body Battery Change']}\nResting Heart Rate: {d['Resting Heart Rate']}\nRestlessness Level: {d['Restlessness Level']}\nRestless moments: {d['Restless moments']}\nSleep Feedback: {d["Sleep Feedback"]}"""
+            )
+        except Exception as e:
+            summary_message = f"No Sleep Data in Garmin: {e}"
+            print(summary_message)
+        return summary_message
+
+    def garminMainEmailFormatter(self, data, html_body):
+        header_div = f"""<div class="header">
+                <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
+                <div>
+                    <h1>Garmin Statistics</h1>
+                    <p><b>{data['user_name']}</b></p>
+                </div>
+            </div>""" 
+        html_content = f"""
+            <html>
+            <head>
+                    <style>
+            body {{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #242424;
+                color: #d1d1d1;
+                padding: 20px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }}
+            .header {{
+                display: flex;
+                align-items: center;
+                margin-bottom: 30px;
+            }}
+            .profile-img {{
+                border-radius: 50%;
+                margin-right: 20px;
+                border: 3px solid #444;
+                width: 80px;
+                height: 80px;
+            }}
+            .summary {{
+                background-color: #242424;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                margin-bottom: 30px;
+                border: 1px solid #444;
+                color: #d1d1d1;
+            }}
+            .summary span {{
+                font-weight: bold;
+                color: #00bfa5;
+            }}
+            .data-table {{
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px;
+            }}
+            th, td{{
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #444;
+                color: #cfd8dc;
+            }}
+            th {{
+                background-color: #333;
+                color: #00bfa5;
+                font-size: 1.1em;
+                letter-spacing: 0.5px;
+            }}
+            td {{
+                background-color: #202020;
+                font-size: 0.95em;
+            }}
+            .section-title {{
+                font-size: 1.6em;
+                margin-bottom: 15px;
+                color: #00bfa5;
+                font-weight: bold;
+                letter-spacing: 0.5px;
+            }}
+            .footer {{
+                text-align: center;
+                color: #888;
+                font-size: 0.85em;
+                padding: 15px;
+                border-top: 1px solid #444;
+                margin-top: 30px;
+            }}
+            .footer img {{
+                max-width: 100%;
+                height: auto;
+                margin-top: 15px;
+            }}
+            a {{
+                color: #00bfa5;
+                text-decoration: none;
+            }}
+            a:hover {{
+                text-decoration: underline;
+            }}
+            button {{
+                background-color: #00bfa5;
+                color: #181818;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                transition: background-color 0.3s ease;
+            }}
+            button:hover {{
+                background-color: #009688;
+            }}
+            .additional-details p {{
+                font-size: 0.9em;
+                color: #b0bec5;
+                margin-bottom: 10px;
+            }}
+            /* Animation for hover effects */
+            th, td {{
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }}
+            tr:hover td {{
+                background-color: #333;
+                color: #fff;
+            }}
+        </style>
+
+            </head>
+            <body>
+            {header_div}
+                <div class="summary">
+                {html_body}
+                <div class="footer">
+            <p></p>
+            <img src="{data['device_image']}" class="profile-img" width="15" height="15">
+            <p>Uploaded From: <b>{data['device_name']}</b></p>
+        </div>
+    </body>
+    </html>
+    """
+        return html_content
+
+    def garminBodystatsFormatterForTelegram(self, d):
+        try:
+            summary_message = f"""Body Statistics for {d['formatted_date']}:\n\nTotal kcal: {d['Total kcal']}\nActive kcal: {d['Active kcal']}\nTotal Steps / Goal: {d['Total Steps / Goal']}\nDistance: {d['Distance']}\nHighly Active Duration: {d['Highly Active Duration']}\nActive Duration: {d['Active Duration']}\nSedentary Duration: {d['Sedentary Duration']}\nModerate Intensity Minutes: {d['Moderate Intensity Minutes']}\nVigorous Intensity Minutes: {d['Vigorous Intensity Minutes']}\nIntensity Minutes Goal Status: {d['Intensity Minutes Goal Status']}\nFloors Up: {d['Floors Up']}\nFloors Down: {d['Floors Down']}\nHeart Rate - Min/Resting/Max: {d['Heart Rate - Min/Resting/Max']}\nLast 7 Days Avg Resting Heart Rate: {d['Last Seven Days Avg Resting Heart Rate']}\nAverage Stress: {d['Average Stress']}\nMax Stress Level: {d['Max Stress Level']}\nStress Duration: {d['Stress Duration']}\nBlood Oxygen (SpO2): {d['Blood Oxygen (SpO2)']}"""
+        except Exception as e:
+            summary_message = f"No Body Data in Garmin: {e}"
+            print(summary_message)
+        return summary_message
+
+    def newsletterEmailFormatterHtml(self, sleep_data, body_stats_data):
+        try:
+            message = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.5">
+                 <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    margin: 0;
+                    padding: 0;
+                }}
+                .container {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    padding: 20px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    margin-top: 20px;
+                }}
+                .header {{
+                    background-color: #0073e6;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    border-radius: 8px 8px 0 0;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                .section {{
+                    margin-bottom: 30px;
+                }}
+                .section-title {{
+                    font-size: 1.4em;
+                    margin-bottom: 10px;
+                    color: #0073e6;
+                }}
+                .stats {{
+                    margin-bottom: 20px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
+                }}
+                .footer img {{
+                    max-width: 100%;
+                    width: 100%;
+                    height: auto; 
+                    margin-top: 10px;
+                }}
+
+                .footer {{
+                    text-align: center;
+                    color: #777;
+                    font-size: 0.9em;
+                    padding: 10px;
+                    border-top: 1px solid #ddd;
+                    margin-top: 20px;
+                }}
+                .data-table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }}
+                .data-table th,
+                .data-table td {{
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                    background-color: #fff;
+                }}
+                .data-table th {{
+                    color: #333;
+                }}
+                .score {{
+                    font-weight: bold;
+                }}
+            </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>Garmin Statistics</h2>
+                    </div>
+                    <div class="content">
+                        <div class="section">
+                            <h3 class="section-title">Sleep Data for {sleep_data['formatted_date']}</h3>
+                            <div class="stats">
+                                <table class="data-table">
+                                    <tr>
+                                        <th>Overall Sleep Summary</th>
+                                    </tr>
+                                    <tr>
+                                        <td>You slept for {sleep_data['total_time']}, from {sleep_data['from_']} to {sleep_data['to_']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Score: <span class="score">{sleep_data['sleep_score']} ({sleep_data['quality']})</span></td>
+                                    </tr>
+                                </table>
+
+                                <table class="data-table">
+                                    <tr>
+                                        <th>Sleep Stages</th>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>REM Sleep:</strong></td>
+                                        <td>{sleep_data['REM_Quality']}</td>
+                                        <td>{sleep_data['REM_Time']}</td>
+                                        <td>Score: <span class="score">{sleep_data['REM_Score']} Optimal: {sleep_data['REM_Optimal']}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Light Sleep:</strong></td>
+                                        <td>{sleep_data['Light_Quality']}</td>
+                                        <td>{sleep_data['Light_Time']}</td>
+                                        <td>Score: <span class="score">{sleep_data['Light_Score']} Optimal: {sleep_data['Light_Optimal']}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Deep Sleep:</strong></td>
+                                        <td>{sleep_data['Deep_Quality']}</td>
+                                        <td>{sleep_data['Deep_Time']}</td>
+                                        <td>Score: <span class="score">{sleep_data['Deep_Score']} Optimal: {sleep_data['Deep_Optimal']}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Awake:</strong></td>
+                                        <td>{sleep_data['Awake_Quality']}</td>
+                                        <td>{sleep_data['Awake_Time']}</td>
+                                        <td>Score: <span class="score">{sleep_data['Awake_Score']} Optimal: {sleep_data['Awake_Optimal']}</span></td>
+                                    </tr>
+                                </table>
+
+                                <div class="section">
+                                    <div class="section-title">Additional Details</div>
+                                    <div class="section-content">
+                                        <p>Average Sleep Stress: {sleep_data['Average_Sleep_Stress']}</p>
+                                        <p>Battery Change: {sleep_data['Body Battery Change']}</p>
+                                        <p>Resting Heart Rate: {sleep_data['Resting Heart Rate']}</p>
+                                        <p>Restlessness Level: {sleep_data['Restlessness Level']}</p>
+                                        <p>Restless moments: {sleep_data['Restless moments']}</p>
+                                        <p>Sleep Feedback: {sleep_data['Sleep Feedback']}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stats">
+                                <h3 class="section-title">Body Statistics for {body_stats_data['formatted_date']}</h3>
+                                <table class="data-table">
+                                    <tr>
+                                        <th>Total kcal</th>
+                                        <td>{body_stats_data['Total kcal']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Active kcal</th>
+                                        <td>{body_stats_data['Active kcal']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Steps / Goal</th>
+                                        <td>{body_stats_data['Total Steps / Goal']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Distance</th>
+                                        <td>{body_stats_data['Distance']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Highly Active Duration</th>
+                                        <td>{body_stats_data['Highly Active Duration']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Active Duration</th>
+                                        <td>{body_stats_data['Active Duration']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sedentary Duration</th>
+                                        <td>{body_stats_data['Sedentary Duration']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Moderate Intensity Minutes</th>
+                                        <td>{body_stats_data['Moderate Intensity Minutes']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vigorous Intensity Minutes</th>
+                                        <td>{body_stats_data['Vigorous Intensity Minutes']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Intensity Minutes Goal Status</th>
+                                        <td>{body_stats_data['Intensity Minutes Goal Status']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Floors Up</th>
+                                        <td>{body_stats_data['Floors Up']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Floors Down</th>
+                                        <td>{body_stats_data['Floors Down']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Heart Rate - Min/Resting/Max</th>
+                                        <td>{body_stats_data['Heart Rate - Min/Resting/Max']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Seven Days Avg Resting Heart Rate</th>
+                                        <td>{body_stats_data['Last Seven Days Avg Resting Heart Rate']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Average Stress</th>
+                                        <td>{body_stats_data['Average Stress']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Max Stress Level</th>
+                                        <td>{body_stats_data['Max Stress Level']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Stress Duration</th>
+                                        <td>{body_stats_data['Stress Duration']}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Blood Oxygen (SpO2)</th>
+                                        <td>{body_stats_data['Blood Oxygen (SpO2)']}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                    <p>Have a great day!</p>
+                    <img src="https://lh3.googleusercontent.com/pw/AP1GczMyn-jztxA6E7Va572D3c8r00tPo7PpT35tkpYqLez72sDBLXai3ZXQJEc9doLAWUGjdgkq4846yU1p3-vzDYMCvHIqYzfQ9OlONFhzeLW3DCzSggOW9RDXsntkNHvLe251U7CbQ4q2Lepast7mWo0=w808-h278-s-no" alt="Garmin Statistics" style="max-width:100px;width:100%;height:auto;margin-top:10px;">
+                </div>
+
+                </div>
+            </body>
+            </html>
+            """
+        except Exception as e:
+            message = f"<p>No Data Available: {e}</p>"
+            print(message)
+        return message
+
+    def formatStravaActivityText(self, activity_data):
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+
+        formatted_start_date = datetime.datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
+
+        message = (
+            f"Activity: {name}\n"
+            f"Distance: {distance / 1000:.2f} km\n"
+            f"Moving Time: {CommonUtils().seconds_to_hm(moving_time)}\n"
+            f"Start Date: {formatted_start_date}\n"
+            f"Average Speed: {CommonUtils().convert_speed_mps_to_minkm(average_speed)}\n"
+            f"Max Speed: {CommonUtils().convert_speed_mps_to_minkm(max_speed)}\n"
+            f"Average Heartrate: {average_heartrate} BPM\n"
+            f"Max Heartrate: {max_heartrate} BPM\n"
+            f"Average Cadence: {cadence} SPM"
+        )
+
+        return message
+
+    def formatStravaActivityHtml(self, activity_data):
+        name = activity_data.get("name", "Unnamed Activity")
+        distance = activity_data.get("distance", 0)
+        moving_time = activity_data.get("moving_time", 0)
+        start_date = activity_data.get("start_date_local", "")
+        average_speed = activity_data.get("average_speed", 0)
+        max_speed = activity_data.get("max_speed", 0)
+        average_heartrate = activity_data.get("average_heartrate", 0)
+        max_heartrate = activity_data.get("max_heartrate", 0)
+        cadence = 2 * (activity_data.get("average_cadence", 0))
+
+        formatted_start_date = datetime.datetime.strptime(
+            start_date, "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d %H:%M:%S")
+
+        message = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Strava Activity</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    margin: 0;
+                    padding: 0;
+                }}
+                .container {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    padding: 20px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    margin-top: 20px;
+                }}
+                .header {{
+                    background-color: #0073e6;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    border-radius: 8px 8px 0 0;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                .section {{
+                    margin-bottom: 30px;
+                }}
+                .section-title {{
+                    font-size: 1.4em;
+                    margin-bottom: 10px;
+                    color: #0073e6;
+                }}
+                .stats {{
+                    margin-bottom: 20px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
+                }}
+                .stats p {{
+                    margin: 5px 0;
+                }}
+                .footer {{
+                    text-align: center;
+                    color: #777;
+                    font-size: 0.9em;
+                    padding: 10px;
+                    border-top: 1px solid #ddd;
+                    margin-top: 20px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Strava Activity</h1>
+                </div>
+                <div class="content">
+                    <div class="section">
+                        <h2 class="section-title">Activity Details</h2>
+                        <div class="stats">
+                            <p><strong>Name:</strong> {name}</p>
+                            <p><strong>Distance:</strong> {distance / 1000:.2f} km</p>
+                            <p><strong>Moving Time:</strong> {CommonUtils().seconds_to_hm(moving_time)}</p>
+                            <p><strong>Start Date:</strong> {formatted_start_date}</p>
+                            <p><strong>Average Speed:</strong> {CommonUtils().convert_speed_mps_to_minkm(average_speed)}</p>
+                            <p><strong>Max Speed:</strong> {CommonUtils().convert_speed_mps_to_minkm(max_speed)}</p>
+                            <p><strong>Average Heartrate:</strong> {average_heartrate} BPM</p>
+                            <p><strong>Max Heartrate:</strong> {max_heartrate} BPM</p>
+                            <p><strong>Average Cadence:</strong> {cadence} SPM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Have a great day!</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        return message
+
     def formatStravaActivityHtml2(self, activity_data):
         name = activity_data.get("name", "Unnamed Activity")
         distance = activity_data.get("distance", 0)
@@ -216,7 +747,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                     color: #ffffff;
                     padding: 10px;
                     text-align: center;
-                    font-size: 18px;
+                    font-size: 24px;
                 }}
                 .content {{
                     padding: 20px;
@@ -303,403 +834,6 @@ Restlessness Level: {sleep_data['Restlessness Level']}
         """
 
         return html_content
-
-
-    def garminMainEmailFormatter(self, data, html_body):
-        header_div = f"""<div class="header">
-                <img src="{data['profile_image']}" class="profile-img" width="100" height="100">
-                <div>
-                    <h1>Garmin Statistics</h1>
-                    <p><b>{data['user_name']}</b></p>
-                </div>
-            </div>""" 
-        html_content = f"""
-        <html>
-        <head>
-            <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2d2d30;
-            color: 	#3e3e42;
-            padding: 20px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }}
-        .header {{
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #007acc;
-            padding-bottom: 20px;
-        }}
-        .profile-img {{
-            border-radius: 50%;
-            margin-right: 20px;
-            border: 3px solid #444;
-            width: 80px;
-            height: 80px;
-        }}
-        .header h1 {{
-            font-size: 2.2em;
-            color: #007acc;
-            margin: 0;
-        }}
-        .header p {{
-            font-size: 1.1em;
-            color: #b0bec5;
-        }}
-        .summary {{
-            background-color: #242424;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-            margin-bottom: 30px;
-            border: 1px solid #444;
-        }}
-        .summary span {{
-            font-weight: bold;
-            color: 	#3e3e42;
-        }}
-        .data-table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }}
-        th, td {{
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #444;
-            color: #cfd8dc;
-        }}
-        th {{
-            background-color: #007acc;
-            color: #fff;
-            font-size: 1.1em;
-            letter-spacing: 0.5px;
-        }}
-        td {{
-            background-color: #202020;
-            font-size: 0.95em;
-        }}
-        .section-title {{
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #007acc;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 3px solid #007acc;
-            padding-bottom: 10px;
-        }}
-        .footer {{
-            text-align: center;
-            color: #888;
-            font-size: 0.85em;
-            padding: 15px;
-            border-top: 1px solid #444;
-            margin-top: 30px;
-        }}
-        .footer img {{
-            max-width: 100%;
-            height: auto;
-            margin-top: 15px;
-        }}
-        a {{
-            color: #007acc;
-            text-decoration: none;
-        }}
-        a:hover {{
-            text-decoration: underline;
-        }}
-        button {{
-            background-color: #007acc;
-            color: #181818;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }}
-        button:hover {{
-            background-color: #005fa3;
-        }}
-        .additional-details p {{
-            font-size: 0.9em;
-            color: #b0bec5;
-            margin-bottom: 10px;
-        }}
-        /* Animation for hover effects */
-        th, td {{
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }}
-        tr:hover td {{
-            background-color: #333;
-            color: #fff;
-        }}
-        </style>
-
-        </head>
-        <body>
-        {header_div}
-            <div class="summary">
-            {html_body}
-            <div class="footer">
-        <p></p>
-        <img src="{data['device_image']}" class="profile-img" width="15" height="15">
-        <p>Uploaded From: <b>{data['device_name']}</b></p>
-    </div>
-</body>
-</html>
-"""
-        return html_content
-
-    def garminBodystatsFormatterForTelegram(self, d):
-        try:
-            summary_message = f"""Body Statistics for {d['formatted_date']}:\n\nTotal kcal: {d['Total kcal']}\nActive kcal: {d['Active kcal']}\nTotal Steps / Goal: {d['Total Steps / Goal']}\nDistance: {d['Distance']}\nHighly Active Duration: {d['Highly Active Duration']}\nActive Duration: {d['Active Duration']}\nSedentary Duration: {d['Sedentary Duration']}\nModerate Intensity Minutes: {d['Moderate Intensity Minutes']}\nVigorous Intensity Minutes: {d['Vigorous Intensity Minutes']}\nIntensity Minutes Goal Status: {d['Intensity Minutes Goal Status']}\nFloors Up: {d['Floors Up']}\nFloors Down: {d['Floors Down']}\nHeart Rate - Min/Resting/Max: {d['Heart Rate - Min/Resting/Max']}\nLast 7 Days Avg Resting Heart Rate: {d['Last Seven Days Avg Resting Heart Rate']}\nAverage Stress: {d['Average Stress']}\nMax Stress Level: {d['Max Stress Level']}\nStress Duration: {d['Stress Duration']}\nBlood Oxygen (SpO2): {d['Blood Oxygen (SpO2)']}"""
-        except Exception as e:
-            summary_message = f"No Body Data in Garmin: {e}"
-            print(summary_message)
-        return summary_message
-
-    def formatStravaActivityText(self, activity_data):
-        name = activity_data.get("name", "Unnamed Activity")
-        distance = activity_data.get("distance", 0)
-        moving_time = activity_data.get("moving_time", 0)
-        start_date = activity_data.get("start_date_local", "")
-        average_speed = activity_data.get("average_speed", 0)
-        max_speed = activity_data.get("max_speed", 0)
-        average_heartrate = activity_data.get("average_heartrate", 0)
-        max_heartrate = activity_data.get("max_heartrate", 0)
-        cadence = 2 * (activity_data.get("average_cadence", 0))
-
-        formatted_start_date = datetime.datetime.strptime(
-            start_date, "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d %H:%M:%S")
-
-        message = (
-            f"Activity: {name}\n"
-            f"Distance: {distance / 1000:.2f} km\n"
-            f"Moving Time: {CommonUtils().seconds_to_hm(moving_time)}\n"
-            f"Start Date: {formatted_start_date}\n"
-            f"Average Speed: {CommonUtils().convert_speed_mps_to_minkm(average_speed)}\n"
-            f"Max Speed: {CommonUtils().convert_speed_mps_to_minkm(max_speed)}\n"
-            f"Average Heartrate: {average_heartrate} BPM\n"
-            f"Max Heartrate: {max_heartrate} BPM\n"
-            f"Average Cadence: {cadence} SPM"
-        )
-
-        return message
-
-    def formatStravaActivityHtml2(self, activity_data):
-        name = activity_data.get("name", "Unnamed Activity")
-        distance = activity_data.get("distance", 0)
-        moving_time = activity_data.get("moving_time", 0)
-        start_date = activity_data.get("start_date_local", "")
-        average_speed = activity_data.get("average_speed", 0)
-        max_speed = activity_data.get("max_speed", 0)
-        average_heartrate = activity_data.get("average_heartrate", 0)
-        max_heartrate = activity_data.get("max_heartrate", 0)
-        cadence = 2 * (activity_data.get("average_cadence", 0))
-        average_temp = activity_data.get("average_temp", 0)
-        calories = activity_data.get("kilojoules", 0)
-        formatted_start_date = datetime.strptime(
-            start_date, "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d %H:%M:%S")
-
-        html_content = f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Strava Activity Summary</title>
-            <style>
-                body {{
-                    font-family: 'Arial', sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                    color: #2d2d30;
-                }}
-        
-                .container {{
-                    width: 90%;
-                    max-width: 900px;
-                    margin: 30px auto;
-                    background-color: #ffffff;
-                    border-radius: 15px;
-                    overflow: hidden;
-                    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-                    padding: 20px;
-                }}
-        
-                .header {{
-                    background-color: #007acc;
-                    color: white;
-                    text-align: center;
-                    padding: 25px 0;
-                    font-size: 26px;
-                    font-weight: bold;
-                    border-radius: 10px;
-                    margin-bottom: 30px;
-                }}
-        
-                .header h1 {{
-                    margin: 0;
-                }}
-        
-                .header p {{
-                    font-size: 18px;
-                    margin-top: 5px;
-                    color: #cfe2ff;
-                }}
-        
-                .content {{
-                    padding: 20px;
-                }}
-        
-                .table-container {{
-                    background-color: #f9f9f9;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    margin-bottom: 30px;
-                }}
-        
-                table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 0;
-                }}
-        
-                th, td {{
-                    padding: 12px 20px;
-                    text-align: left;
-                }}
-        
-                th {{
-                    background-color: #007acc;
-                    color: white;
-                    font-size: 16px;
-                }}
-        
-                td {{
-                    font-size: 16px;
-                    border-bottom: 1px solid #ddd;
-                }}
-        
-                td.highlight {{
-                    font-weight: bold;
-                    color: #007acc;
-                }}
-        
-                tr:last-child td {{
-                    border-bottom: none;
-                }}
-        
-                .summary-footer {{
-                    text-align: center;
-                    font-size: 14px;
-                    color: #888888;
-                }}
-        
-                .icon {{
-                    width: 20px;
-                    height: 20px;
-                    margin-right: 8px;
-                }}
-        
-                .button {{
-                    display: inline-block;
-                    background-color: #007acc;
-                    color: white;
-                    padding: 10px 20px;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    font-weight: bold;
-                    text-align: center;
-                    margin-top: 10px;
-                    transition: background-color 0.3s ease;
-                }}
-        
-                .button:hover {{
-                    background-color: #005fa3;
-                }}
-            </style>
-        </head>
-        <body>
-
-            <div class="container">
-                <div class="header">
-                    <h1>Strava Activity Summary</h1>
-                    <p>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</p>
-                </div>
-
-                <div class="content">
-                    <div class="table-container">
-                        <table>
-                            <tr>
-                                <th colspan="2">Activity Details</th>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Activity Name:</td>
-                                <td>{name}</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Distance:</td>
-                                <td>{distance / 1000:.2f} km</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Moving Time:</td>
-                                <td>{CommonUtils().seconds_to_hm(moving_time)}</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Start Date:</td>
-                                <td>{formatted_start_date}</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Average Speed:</td>
-                                <td>{CommonUtils().convert_speed_mps_to_minkm(average_speed)}</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Max Speed:</td>
-                                <td>{CommonUtils().convert_speed_mps_to_minkm(max_speed)}</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Average Heartrate:</td>
-                                <td>{average_heartrate} BPM</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Max Heartrate:</td>
-                                <td>{max_heartrate} BPM</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Average Cadence:</td>
-                                <td>{cadence} SPM</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Average Temp:</td>
-                                <td>{average_temp} °C</td>
-                            </tr>
-                            <tr>
-                                <td class="highlight">Calories:</td>
-                                <td>{calories} kJ</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <p class="summary-footer">This email was generated automatically. For more details, visit your Strava account.</p>
-
-                    <a href="https://www.strava.com" class="button">View on Strava</a>
-                </div>
-            </div>
-
-        </body>
-        </html>
-        """
-
-        return html_content
-
     
     def formatWeatherDataHtmlTableEmail(self,data_list, day_list, name, location):
         html_content = '''<html>
