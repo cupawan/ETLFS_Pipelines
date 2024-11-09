@@ -23,14 +23,14 @@ def main():
         query=query,
     )
     logger.info(f"Is Executed: {status_mongo}")
-    if not status_mongo:
-        logger.info(f"Starting Execution")
-        help.send_data()
-        logger.info("Process Completed")
-        return {"statusCode": 200, "status": "OK"}
-    else:
-        logger.info("Already Executed")
-        return {"statusCode": 200, "status": "Already executed"}
+    # if not status_mongo:
+    logger.info(f"Starting Execution")
+    help.send_data()
+    logger.info("Process Completed")
+    return {"statusCode": 200, "status": "OK"}
+    # else:
+    #     logger.info("Already Executed")
+    #     return {"statusCode": 200, "status": "Already executed"}
 
 def LambdaHandler(event, context):
     try:
