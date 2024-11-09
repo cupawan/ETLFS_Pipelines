@@ -31,26 +31,6 @@
       "Type": "String",
       "NoEcho": "true"
     },
-    "AwsAccessKey": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "AwsSecretAccessKey": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "AwsS3BucketName": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "AwsS3LambdaFolderKey": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "AwsS3LambdaGarminFilename": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
     "MongodbConnectionString": {
       "Type": "String",
       "NoEcho": "true"
@@ -68,10 +48,6 @@
       "NoEcho": "true"
     },
     "RecEmail": {
-      "Type": "String",
-      "NoEcho": "true"
-    },
-    "RunningMapPath": {
       "Type": "String",
       "NoEcho": "true"
     },
@@ -154,20 +130,8 @@
             "MyEmailAddress": {
               "Ref": "MyEmailAddress"
             },
-            "AwsAccessKey": {
-              "Ref": "AwsAccessKey"
-            },
-            "AwsSecretAccessKey": {
-              "Ref": "AwsSecretAccessKey"
-            },
-            "AwsS3BucketName": {
-              "Ref": "AwsS3BucketName"
-            },
-            "AwsS3LambdaFolderKey": {
-              "Ref": "AwsS3LambdaFolderKey"
-            },
-            "AwsS3LambdaGarminFilename": {
-              "Ref": "AwsS3LambdaGarminFilename"
+            "SourceName": {
+              "Ref": "SourceName"
             },
             "MongodbConnectionString": {
               "Ref": "MongodbConnectionString"
@@ -184,8 +148,8 @@
             "RecEmail": {
               "Ref": "RecEmail"
             },
-            "RunningMapPath": {
-              "Ref": "RunningMapPath"
+            "ApplicationName": {
+              "Ref": "ApplicationName"
             },
             "GoogleApiKey": {
               "Ref": "GoogleApiKey"

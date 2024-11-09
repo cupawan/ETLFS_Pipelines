@@ -143,6 +143,12 @@
             },
             "RecEmail": {
               "Ref": "RecEmail"
+            },
+            "SourceName": {
+              "Ref": "StSourceName"
+            },
+            "ApplicationName": {
+              "Ref": "ApplicationName"
             }
           }
         },

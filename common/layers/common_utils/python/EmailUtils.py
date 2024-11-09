@@ -24,7 +24,7 @@ class SendEmail:
         msg = MIMEMultipart()
         msg['From'] = self.bulletin_email
         msg['To'] = send_to
-        msg['Subject'] = f"{self.sync_date} {subject.strip()}"
+        msg['Subject'] =f"{subject.strip()} - {self.sync_date}"
         if not self.is_html:
             msg.attach(MIMEText(email_body, 'plain'))
         else:            

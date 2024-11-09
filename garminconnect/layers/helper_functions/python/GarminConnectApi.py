@@ -1,7 +1,6 @@
 import os
 import pytz
 import datetime
-from datetime import timedelta
 from garminconnect import Garmin
 from collections import defaultdict
 from Boto3Toolkit import Boto3Utils
@@ -14,27 +13,25 @@ logger.setLevel("INFO")
 
 class GarminAPI:
     def __init__(self):
-        self.today = datetime.date.today()
         self.api = self.setUpGarmin()
-        self.login  = self.api.login()
-        self.today_c_date = self.today.strftime("%Y-%m-%d")
-        self.yesterday = self.today - timedelta(days = 1)
-        self.yesterday_c_date = self.yesterday.strftime("%Y-%m-%d")
+        self.today_c_date = datetime.date.today().strftime("%Y-%m-%d")
+        self.yesterday_c_date = (datetime.datetime.today() -datetime.timedelta(days=1)).date().strftime("%Y-%m-%d")
         self.device_name, self.device_image = self.getPrimaryTrainingDevice()
         self.profile_image = os.environ["GarminProfileImage"]
         self.utils = CommonUtils()
         
     def setUpGarmin(self):
-        try:
-            api = Garmin(os.environ["MyEmailAddress"], os.environ["MyGarminPassword"])
-        except Exception as e:
-            print(f"Error logging in Garmin API: {e}")
-            api = None
-        return api
+        api = Garmin(os.environ["MyEmailAddress"], os.environ["MyGarminPassword"])
+        api.login()
+        if api.login():
+            return api
+        else:
+            msg = f"Error logging in Garmin API"
+            raise LoginError(msg = msg)
     
     def getSleepStats(self):
         try:
-            logger.info("Fetching Sleep Statistics from Garmin")
+            logger.info(f"[Sleep Insights]: Fetching Data for {self.yesterday_c_date}")
             sleep_data = self.api.get_sleep_data(self.today_c_date)
             sleep_dict = defaultdict(lambda:0)
             calendar_date = sleep_data['dailySleepDTO']['calendarDate']
@@ -79,90 +76,35 @@ class GarminAPI:
                 }
             logger.info("Generated Sleep Statistics Data Successfully")
             return sleep_dict
-        except Exception:
-            logger.error("[Sleep]: No Sleep Data Found")
-            raise NoSleepError()
+        except Exception as e:
+            msg = f"[Sleep]: No Sleep Data Found - {e}"
+            logger.error(msg)
+            raise NoDataError(msg = msg)
     
     def getYesterdayBodyStats(self):
         try:
-            logger.info(f"Fetching Body Statistics for {self.yesterday_c_date}")
+            logger.info(f"[Body Statistics]: Fetching Data for {self.yesterday_c_date}")
             garmin_body_stats = self.api.get_stats_and_body(self.yesterday_c_date)
             date_object = datetime.datetime.strptime(garmin_body_stats['calendarDate'], '%Y-%m-%d')
             formatted_date = date_object.strftime('%a, %d %b %y')
             d = {
-                "formatted_date" : formatted_date,
-                "Total kcal": int(garmin_body_stats['totalKilocalories']),
-                "Active kcal": int(garmin_body_stats['activeKilocalories']),
-                "Total Steps / Goal": f"{garmin_body_stats['totalSteps']} / {garmin_body_stats['dailyStepGoal']}",
-                "Distance": garmin_body_stats['totalDistanceMeters'],
-                "Highly Active Duration": self.utils.seconds_to_hm(garmin_body_stats['highlyActiveSeconds']),
-                "Active Duration": self.utils.seconds_to_hm(garmin_body_stats['activeSeconds']),
-                "Sedentary Duration": self.utils.seconds_to_hm(garmin_body_stats['sedentarySeconds']),
-                "Moderate Intensity Minutes": garmin_body_stats['moderateIntensityMinutes'],
-                "Vigorous Intensity Minutes": garmin_body_stats['vigorousIntensityMinutes'],
-                "Floors Up": int(garmin_body_stats['floorsAscended']),
-                "Floors Down": int(garmin_body_stats['floorsDescended']),
-                "Heart Rate - Min/Resting/Max": f"{garmin_body_stats['minHeartRate']} / {garmin_body_stats['restingHeartRate']} / {garmin_body_stats['maxHeartRate']}",
-                "Last Seven Days Avg RHR": garmin_body_stats['lastSevenDaysAvgRestingHeartRate'],
-                "Avg Stress": garmin_body_stats['averageStressLevel'],
-                "Max Stress": garmin_body_stats['maxStressLevel'],
-                "Stress Duration": self.utils.seconds_to_hm(garmin_body_stats['stressDuration']),
-                "Blood Oxygen (SpO2)": garmin_body_stats['averageSpo2']
+                "formatted_date" : formatted_date,"Total kcal": int(garmin_body_stats['totalKilocalories']),"Active kcal": int(garmin_body_stats['activeKilocalories']),"Total Steps / Goal": f"{garmin_body_stats['totalSteps']} / {garmin_body_stats['dailyStepGoal']}","Distance": garmin_body_stats['totalDistanceMeters'],"Highly Active Duration": self.utils.seconds_to_hm(garmin_body_stats['highlyActiveSeconds']),"Active Duration": self.utils.seconds_to_hm(garmin_body_stats['activeSeconds']),"Sedentary Duration": self.utils.seconds_to_hm(garmin_body_stats['sedentarySeconds']),"Moderate Intensity Minutes": garmin_body_stats['moderateIntensityMinutes'],"Vigorous Intensity Minutes": garmin_body_stats['vigorousIntensityMinutes'],"Floors Up": int(garmin_body_stats['floorsAscended']),"Floors Down": int(garmin_body_stats['floorsDescended']),"Heart Rate - Min/Resting/Max": f"{garmin_body_stats['minHeartRate']} / {garmin_body_stats['restingHeartRate']} / {garmin_body_stats['maxHeartRate']}","Last Seven Days Avg RHR": garmin_body_stats['lastSevenDaysAvgRestingHeartRate'],"Avg Stress": garmin_body_stats['averageStressLevel'],"Max Stress": garmin_body_stats['maxStressLevel'],"Stress Duration": self.utils.seconds_to_hm(garmin_body_stats['stressDuration']),"Blood Oxygen (SpO2)": garmin_body_stats['averageSpo2'], 'device_name': self.device_name, 'device_image': self.device_image, "user_name": self.api.full_name, 'profile_image': self.profile_image
                 }        
             logger.info("Generated Body Statistics Data Successfully")
             return d
         except Exception:
-            logger.error("[Body]: No Body Statistics Found")
-            raise NoBodyStatsError()
-    
-    def getTodayBodyStats(self):
-        stats = self.api.get_stats_and_body(self.today_c_date)
-        return stats
-
-    def getActivitiesByDateRange(self, start_date, end_date):
-        data = self.api.get_activities_by_date(startdate=start_date, enddate=end_date)
-        return data
-    
-    def getActivitiesForDate(self, fordate):
-        data = self.api.get_activities_fordate(fordate = fordate)
-        return data
-    
-    def getActivityById(self, activity_id):
-        data = self.api.get_activity(activity_id = activity_id)
-        return data
-
-    def getActivityDetailsById(self, activity_id):
-        data = self.api.get_activity(activity_id = activity_id)
-        return data
-
-    def getGearForActivityId(self,activity_id):
-        data = self.api.get_activity_gear(activity_id=activity_id)
-        return data[0]['customMakeModel']
-    
-    def getLastActivity(self):
-        data = self.api.get_last_activity()
-        return data
-    
-    def getYesterdayActivity(self):
-        data = self.api.get_activities_fordate(fordate = self.yesterday_c_date)
-        return data
-    
-    def getProgressSummaryBetweenDates(self, start_date, end_date):
-        data = self.api.get_progress_summary_between_dates(startdate= start_date, enddate= end_date)
-        return data
-    
-    def getUserSummary(self, cdate):
-        data = self.api.get_user_summary(cdate)
-        return data
+            msg = "[Body Statistics]: No Body Statistics Data Found"
+            logger.error(msg)
+            raise NoDataError(msg = msg)        
     
     def getRunningData(self):
         running_data = defaultdict(lambda:0)
         metadata = defaultdict(lambda:0)
         logger.info("Fetching Running Data")
         try:
-            data = self.getActivitiesForDate(self.today_c_date)
+            data = self.api.get_activities_fordate(fordate = self.today_c_date)
         except Exception as e:
-            msg = f"Unable to Fetch Data: {str(e)}"
+            msg = f"Unable to Fetch Activities Data For {self.today_c_date}: {str(e)}"
             logger.error(msg)
             raise NoDataError(msg)
         metadata['device_name'] = self.getPrimaryTrainingDevice()[0]
@@ -171,12 +113,13 @@ class GarminAPI:
         metadata['map_url'] = self.getMapImage()
         for i in data['ActivitiesForDay']['payload']:
             if i['activityType']['typeKey'] == "running":
-                running_data["activity_id"] = i['activityId']
-                data = self.getActivityById(i['activityId'])
+                activity_id = i['activityId']
+                running_data["activity_id"] =activity_id
+                data = self.api.get_activity(activity_id = activity_id)
                 # metadata['profile_image'] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
                 metadata['user_name'] = data['metadataDTO']['userInfoDto']['fullname']
                 metadata['location_name'] = data.get('locationName', 'Unknown Location')
-                metadata['gear'] = self.getGearForActivityId(activity_id=i['activityId'])
+                metadata['gear'] = self.api.get_activity_gear(activity_id=activity_id)[0]['customMakeModel']
                 running_data["activity_name"] = data['activityName']
                 running_data["activity_type"] = data['activityTypeDTO']['typeKey'].title()
                 running_data["user_name"] = data['metadataDTO']['userInfoDto']['fullname']
@@ -203,7 +146,7 @@ class GarminAPI:
                 running_data.update(metadata)
                 return running_data
             else:
-                msg = "No Running activity has been recorded yet"
+                msg = f"No Running activity has been recorded yet for {self.today_c_date}"
                 logger.error(msg)
                 raise NoDataError(msg)
 
@@ -241,5 +184,3 @@ class GarminAPI:
         path = "|".join([f"{lat},{lon}" for lat, lon in coordinates])
         map_url = f"{os.environ["GoogleMapsApiPath"].replace("=//","://")}{path}&key={os.environ["GoogleApiKey"]}"
         return map_url
-
-    
