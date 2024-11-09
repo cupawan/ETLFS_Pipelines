@@ -96,7 +96,7 @@ class Formatter:
         color: #888;
         font-size: 0.85em;
         padding: 15px;
-        border-top: 1px solid #b48646;
+        border-top: 1px solid #007acc;
         margin-top: 30px;
         }
     .footer img {
@@ -107,17 +107,18 @@ class Formatter:
     .profile-img {
         border-radius: 50%;
         margin-right: 20px;
-        border: 2px solid #b48646;
+        border: 2px solid #007acc;
         width: 80px;
         height: 80px;
         }
-    
-    .device-img {
+
+    .footer img.device-img {
+        display: block;
+        margin: 0 auto 10px auto;
         border-radius: 50%;
-        margin-right: 20px;
-        border: 1px solid #b48646;
-        width: 40px;
-        height: 40px;
+        border: 10px solid #007acc;
+        width: 50px;
+        height: 50px;
         }
         </style>"""
 
@@ -319,12 +320,11 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                 <div class="container">
                 {html_body}
                 <div class="footer">
-            <p></p>
-            <img src="{data['device_image']}" class="device-img" width="15" height="15">
-            <p>Uploaded From: <b>{data['device_name']}</b></p>
-        </div>
-    </body>
-    </html>
+                <img src="{data['device_image']}" class="device-img" width="15" height="15">
+                <p>Uploaded From: <b>{data['device_name']}</b></p>
+                </div>
+                </body>
+                </html>
     """
         return html_content
 
@@ -739,7 +739,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
 <body>
     <div class="container">
         <div class="header">
-            <h1>Strava Activity Summary</h1>
+            <h2>Strava Activity Summary</h2>
             <h2>{datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ").strftime('%A, %d %b %Y')}</h2>
         </div>
         <div class="content">
