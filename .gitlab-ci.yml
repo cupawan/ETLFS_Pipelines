@@ -1,13 +1,13 @@
 image: python:3.12
 
 stages:
-  - build
+  # - build
   - deploy
 
-before_script:
-  - apt-get update
-  - apt-get install -y awscli zip
-  - pip install aws-sam-cli
+# before_script:
+#   - apt-get update
+#   - apt-get install -y awscli zip
+#   - pip install aws-sam-cli
 
 build:
   stage: build
