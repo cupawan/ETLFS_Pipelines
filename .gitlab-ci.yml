@@ -1,7 +1,7 @@
 image: python:3.12
 
 stages:
-  # - build
+  - build
   - deploy
 
 # before_script:
@@ -9,11 +9,11 @@ stages:
 #   - apt-get install -y awscli zip
 #   - pip install aws-sam-cli
 
-build:
-  stage: build
-  script:
-    - rm -rf .aws-sam
-    - sam build --template-file etlfs-main-stack.json
+# build:
+#   stage: build
+#   script:
+#     - rm -rf .aws-sam
+#     - sam build --template-file etlfs-main-stack.json
 
 deploy:
   stage: deploy
