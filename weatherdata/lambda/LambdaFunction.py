@@ -5,7 +5,7 @@ from EmailUtils import SendEmail
 from MongoDbUtils import MongoUtils
 from FormattingUtils import Formatter
 
-os.environ["ApplicationName"]
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
