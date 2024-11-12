@@ -33,7 +33,6 @@ class GarminAPI:
         sleep_data = self.api.get_sleep_data(self.today_c_date)
         if not sleep_data['dailySleepDTO']['id']:
             msg = f"[Sleep Insights]: No Sleep has been recorded for {self.today_c_date}"
-            logger.error(msg)
             raise NoDataError(msg = msg)
         sleep_dict = defaultdict(lambda:0)
         calendar_date = sleep_data['dailySleepDTO']['calendarDate']
@@ -101,7 +100,6 @@ class GarminAPI:
         data = self.api.get_activities_fordate(fordate = self.today_c_date)
         if not data['ActivitiesForDay']['payload']:
             msg = f"[Running]: No Activities Found For {self.today_c_date}"
-            logger.error(msg)
             raise NoDataError(msg = msg)
         metadata['device_name'] = self.getPrimaryTrainingDevice()[0]
         metadata['device_image'] = self.getPrimaryTrainingDevice()[1]
@@ -144,7 +142,6 @@ class GarminAPI:
                 return running_data
             else:
                 msg = f"[Running]: No Running activity has been recorded yet for {self.today_c_date}"
-                logger.error(msg)
                 raise NoDataError(msg = msg)
 
     def getRunningStreak(self, streakStart= "2024-8-1"):

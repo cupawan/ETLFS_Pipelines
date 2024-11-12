@@ -39,8 +39,8 @@ class StravaAPI:
             self.refresh_token = tokens['refresh_token']
             self.updateEnvironmentTokens()
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
                 
     def getLastSavedActivity(self):
         response = requests.get(self.athlete_activities_url, headers= self.headers)
@@ -51,8 +51,8 @@ class StravaAPI:
             self.refreshAccessToken()
             return self.getLastSavedActivity()
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
                         
     def getActivityById(self, activity_id):
         response = requests.get(f'{self.activities_url}/{activity_id}', headers= self.headers)
@@ -63,8 +63,8 @@ class StravaAPI:
             self.refreshAccessToken()
             return self.getActivityById(activity_id)
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
                    
     def getYesterdayActivity(self, type = "Run"):
         before, after = datetime.today(), datetime.today() - timedelta(days=2)
@@ -76,8 +76,8 @@ class StravaAPI:
             self.refreshAccessToken()
             return self.getYesterdayActivity()
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
         
     def getActivitiesInDateRange(self, after, before):
         epoch_before = int(datetime.strptime(before, "%Y-%m-%d").timestamp())
@@ -90,8 +90,8 @@ class StravaAPI:
             self.refreshAccessToken()
             return self.getActivitiesInDateRange(after, before)
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
         
     def getLastSavedRun(self):
         response = requests.get(self.athlete_activities_url, headers=self.headers)
@@ -103,5 +103,5 @@ class StravaAPI:
             self.refreshAccessToken()
             return self.getLastSavedRun()
         else:
-            logger.error(f"[Strava]: Code {response.status_code} {response.text}")
-            raise NoDataError(code = response.status_code, msg = response.text)
+            msg = f"[Strava]: Code {response.status_code} {response.text}"
+            raise NoDataError(code = response.status_code, msg = msg)
