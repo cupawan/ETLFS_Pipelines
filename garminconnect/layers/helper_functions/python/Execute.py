@@ -52,3 +52,4 @@ class Helper:
         logger.info("[Execution]: Loading Data into MongoDB")
         insert_data_in_mongo = self.mongo_instance.insert_records(collection_name= collection_name, data=data)
         logger.info(f"Inserted Records in MongoDB:\n{insert_data_in_mongo}")
+        logger.info("Process Completed")
