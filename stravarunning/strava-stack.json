@@ -64,6 +64,14 @@
     },
     "CommonLambdaRoleArn": {
       "Type": "String"
+    },
+    "TelegramBotToken": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "TelegramChatId": {
+      "Type": "String",
+      "NoEcho": "true"
     }
   },
   "Resources": {
