@@ -23,7 +23,7 @@ class Helper:
             return None
 
     def formatMessage(self, data):
-        new = self.getLatestActivity()
+        new = self.st.getLastSavedRun()
         old = self.getOldActivity(id)
         new_message = self.format.formatStravaActivityHtml2(activity_data=new)
         old_message = (self.format.formatStravaActivityHtml2(activity_data=old) if old else None)

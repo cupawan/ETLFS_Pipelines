@@ -41,12 +41,6 @@ class CommonUtils:
             out += f"{seconds} Second " if seconds == 1 else f"{seconds} Seconds "
         return out.strip()
     
-    def write_status_file(self):
-        with open("/tmp/Garmin_Statistics_Status.txt", "w") as f:
-            data = f"{datetime.datetime.today().strftime('%d/%m/%y')}: done"
-            f.write(data)
-        return True
-    
     def timestamp_to_date(self, timestamp):
         utc_dt = datetime.datetime.fromtimestamp(timestamp, datetime.timezone.utc)
         ist_dt = utc_dt.astimezone(self.ist)

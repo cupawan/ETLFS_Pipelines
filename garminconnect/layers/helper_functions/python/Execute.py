@@ -39,19 +39,16 @@ class Helper:
             )
         
     def send_data(self):
-        try:
-            logger.info("Fetching data from GarminAPI")
-            data = self.type_statistics_dict[self.this_hour][0]()
-            html_body = self.type_statistics_dict[self.this_hour][1](data)
-            collection_name = self.type_statistics_dict[self.this_hour][2]
-            data_type = collection_name.split("_")[-2].title()
-            logger.info("Data fetched successfully. Formatting email body.")
-            email_body = Formatter().garminMainEmailFormatter(data = data, html_body = html_body)
-            logger.info("Sending email with Garmin Insights")
-            email_message = SendEmail(is_html=True).send_email(send_to = os.environ['RecEmail'], subject = f"Garmin {data_type} Insights", email_body = email_body)
-            logger.info("Inserting Data into MongoDB")
-            insert_data_in_mongo = self.mongo_instance.insert_records(collection_name= collection_name, data=data)
-            logger.info(f"Inserted records in MongoDB:\n{insert_data_in_mongo}")
-        except Exception as e:
-            logger.error(str(e))
-            raise NoDataError(msg=str(e))
+        logger.info("[Execution]: Fetching Data From Garmin")
+        data = self.type_statistics_dict[self.this_hour][0]()
+        html_body = self.type_statistics_dict[self.this_hour][1](data)
+        collection_name = self.type_statistics_dict[self.this_hour][2]
+        data_type = collection_name.split("_")[-2].title()
+        logger.info(f"[Execution]: {data_type } Insights Fetched Successfully. Formatting Email Body.")
+        logger.info("[Execution]: Formatting Email body.")
+        email_body = Formatter().garminMainEmailFormatter(data = data, html_body = html_body)
+        logger.info("[Execution]: Sending email with Garmin Insights")
+        email_message = SendEmail(is_html=True).send_email(send_to = os.environ['RecEmail'], subject = f"Garmin {data_type} Insights", email_body = email_body)
+        logger.info("[Execution]: Loading Data into MongoDB")
+        insert_data_in_mongo = self.mongo_instance.insert_records(collection_name= collection_name, data=data)
+        logger.info(f"Inserted Records in MongoDB:\n{insert_data_in_mongo}")

@@ -6,7 +6,7 @@ class GarminError(Exception):
         
         
 class NoDataError(GarminError):
-    def __init__(self, msg="", code=401):
+    def __init__(self, msg="", code=404):
         super().__init__(msg, code)
         
 class LoginError(GarminError):
