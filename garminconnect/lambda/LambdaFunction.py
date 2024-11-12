@@ -10,12 +10,10 @@ from ErrorHandling import *
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
-telegram_instance = TelegramMessage()
-mongo_instance = MongoUtils()
-
 def LambdaHandler(event, context):
     logger.info(f"Starting Execution")
     help = Helper()
+    telegram_instance = TelegramMessage()
     try:
         help.send_data()
         return {"statusCode": 200, "body": "OK"}

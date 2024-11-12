@@ -16,13 +16,10 @@ logger.setLevel("INFO")
 class Helper:
     def __init__(self):
         ist = pytz.timezone('Asia/Kolkata')
-        self.sync_date = datetime.datetime.today().astimezone(ist).strftime('%d/%m/%y')
         self.this_hour = datetime.datetime.today().astimezone(ist).strftime('%H')
-        self.tg = TelegramMessage()
         self.garmin_instance = GarminAPI()
         self.mongo_instance = MongoUtils()
         self.format_instance = Formatter()
-        self.chat_id = os.environ['TelegramChatId']
         self.type_statistics_dict = defaultdict(
             lambda: (
                 self.garmin_instance.getSleepStats,
