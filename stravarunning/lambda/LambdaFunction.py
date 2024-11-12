@@ -1,16 +1,22 @@
 import os
+import logging
 import traceback
 from Execute import Helper
 from EmailUtils import SendEmail
 from TelegramUtils import TelegramMessage
 from ErrorHandling import *
 
+logger = logging.getLogger(__name__)
+logger.setLevel("INFO")
 
 sub = "Strava Run Statistics"
+
+
 
 def LambdaHandler(event, context):
     try:
         help = Helper()
+        telegram_instance = TelegramMessage()
         data = help.getLatestActivity()
         msg = help.formatMessage(data = data)
         SendEmail(is_html=True).send_email(send_to = os.environ["RecEmail"], subject = sub, email_body = msg)
