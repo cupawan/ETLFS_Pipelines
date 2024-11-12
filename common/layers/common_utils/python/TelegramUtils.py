@@ -1,6 +1,5 @@
 import os
 import requests
-from Boto3Toolkit import Boto3Utils
 
 class TelegramMessage:
     def __init__(self):

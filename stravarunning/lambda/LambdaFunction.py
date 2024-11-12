@@ -11,8 +11,6 @@ logger.setLevel("INFO")
 
 sub = "Strava Run Statistics"
 
-
-
 def LambdaHandler(event, context):
     help = Helper()
     telegram_instance = TelegramMessage()

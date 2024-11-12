@@ -3,8 +3,7 @@ class GarminError(Exception):
         print(f"Error {code}: {msg}")
         self.msg = msg
         self.code = code
-        
-        
+                
 class NoDataError(GarminError):
     def __init__(self, msg="", code=404):
         super().__init__(msg, code)

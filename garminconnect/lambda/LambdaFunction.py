@@ -10,10 +10,8 @@ from ErrorHandling import *
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
-
 telegram_instance = TelegramMessage()
 mongo_instance = MongoUtils()
-
 
 def main():
     help = Helper()

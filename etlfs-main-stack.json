@@ -298,6 +298,12 @@
           },
           "CommonLambdaRoleArn": {
             "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/${CommonStack.Outputs.CommonLambdaRole}"
+          },
+          "TelegramBotToken": {
+            "Ref": "TelegramBotToken"
+          },
+          "TelegramChatId": {
+            "Ref": "TelegramChatId"
           }
         }
       }

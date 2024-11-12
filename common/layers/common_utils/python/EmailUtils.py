@@ -7,7 +7,6 @@ import datetime
 import os
 import pytz
 import logging
-from Boto3Toolkit import Boto3Utils
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -41,4 +40,5 @@ class SendEmail:
             server.starttls()
             server.login(self.bulletin_email, self.bulletin_email_pw)
             server.sendmail(self.bulletin_email, send_to, msg.as_string())
+            logger.info(f"[Email]: Sent to {send_to} Successfully")
             return {'Status': 'Success'}

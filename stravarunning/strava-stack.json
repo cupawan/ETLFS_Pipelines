@@ -149,6 +149,12 @@
             },
             "ApplicationName": {
               "Ref": "ApplicationName"
+            },
+            "TelegramBotToken": {
+              "Ref": "TelegramBotToken"
+            },
+            "TelegramChatId": {
+              "Ref": "TelegramChatId"
             }
           }
         },
