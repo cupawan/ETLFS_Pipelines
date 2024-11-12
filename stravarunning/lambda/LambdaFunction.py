@@ -18,8 +18,7 @@ def LambdaHandler(event, context):
         data = help.getLatestActivity()
         msg = help.formatMessage(data = data)
         SendEmail(is_html=True).send_email(send_to = os.environ["RecEmail"], subject = sub, email_body = msg)
-        return {"statusCode": 200, "body": "OK"}
-    
+        return {"statusCode": 200, "body": "OK"}    
     except NoDataError as e:
         logger.error(e.msg)
         telegram_instance.send_plain_message(chat_id=os.environ["TelegramChatId"], text= e.msg)
