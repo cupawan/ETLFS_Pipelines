@@ -14,9 +14,9 @@ sub = "Strava Run Statistics"
 
 
 def LambdaHandler(event, context):
+    help = Helper()
+    telegram_instance = TelegramMessage()
     try:
-        help = Helper()
-        telegram_instance = TelegramMessage()
         data = help.getLatestActivity()
         msg = help.formatMessage(data = data)
         SendEmail(is_html=True).send_email(send_to = os.environ["RecEmail"], subject = sub, email_body = msg)
