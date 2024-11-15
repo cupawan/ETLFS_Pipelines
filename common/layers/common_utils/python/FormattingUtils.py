@@ -839,7 +839,7 @@ Restlessness Level: {sleep_data['Restlessness Level']}
                             <td>{calories}</td>
                         </tr>
                     </table>
-                    <p style="text-align: center; color: #888888;">This email was generated automatically.</p>
+                    <p style="text-align: center; color: #888888;">Have a nice day.</p>
                 </div>
             </div>
         </body>
