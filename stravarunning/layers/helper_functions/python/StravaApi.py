@@ -25,6 +25,7 @@ class StravaAPI:
     def updateEnvironmentTokens(self):
         os.environ["StravaAccessToken"] = self.access_token
         os.environ["StravaRefreshToken"] = self.refresh_token
+        logger.info(f"[Strava]: Updated Environment Variables")
 
     def refreshAccessToken(self):
         response = requests.post(self.auth_url, data={
@@ -34,6 +35,7 @@ class StravaAPI:
             'refresh_token': self.refresh_token
             })
         if response.status_code == 200:
+            logger.info(f"[Strava]: Refreshed Access Token Successfully")
             tokens = response.json()
             self.access_token = tokens['access_token']
             self.refresh_token = tokens['refresh_token']
@@ -45,6 +47,7 @@ class StravaAPI:
     def getLastSavedActivity(self):
         response = requests.get(self.athlete_activities_url, headers= self.headers)
         if response.status_code == 200:
+            logger.info(f"[Strava]: Fetched Last Saved Activity Successfully")
             return response.json()
         elif response.status_code == 401:
             logger.warning(f"[Strava]: {response.status_code} {response.text}\n Refreshing Tokens")
@@ -57,6 +60,7 @@ class StravaAPI:
     def getActivityById(self, activity_id):
         response = requests.get(f'{self.activities_url}/{activity_id}', headers= self.headers)
         if response.status_code == 200:
+            logger.info(f"[Strava]: Fetched Activity with ID Successfully")
             return response.json()
         elif response.status_code == 401:
             logger.warning(f"[Strava]: {response.status_code} {response.text}\n Refreshing Tokens")
@@ -70,6 +74,7 @@ class StravaAPI:
         before, after = datetime.today(), datetime.today() - timedelta(days=2)
         response = requests.get(f'{self.activities_url}/', headers=self.headers, params = {'before' : before,'after' : after})
         if response.status_code == 200:
+            logger.info(f"[Strava]: Fetched Yesterday's Activity Successfully")
             return response.json()
         elif response.status_code == 401:
             logger.warning(f"[Strava]: {response.status_code} {response.text}\n Refreshing Tokens")
@@ -84,6 +89,7 @@ class StravaAPI:
         epoch_after = int(datetime.strptime(after, "%Y-%m-%d").timestamp())            
         response = requests.get(f'{self.activities_url}/', headers=self.headers, params = {'before' : epoch_before, 'after' : epoch_after})
         if response.status_code == 200:
+            logger.info(f"[Strava]: Fetched Activities in Date Range {after} to {before} Successfully")
             return response.json()
         elif response.status_code == 401:
             logger.warning(f"[Strava]: {response.status_code} {response.text}\n Refreshing Tokens")
@@ -96,6 +102,7 @@ class StravaAPI:
     def getLastSavedRun(self):
         response = requests.get(self.athlete_activities_url, headers=self.headers)
         if response.status_code == 200:
+            logger.info(f"[Strava]: Fetched last Saved Run Successfully")
             last = [i for i in response.json() if i['type'] == "Run"][0]
             return last
         elif response.status_code == 401:
