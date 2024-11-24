@@ -9,13 +9,13 @@ class CommonUtils:
         hours = n_seconds // 3600
         minutes = (n_seconds % 3600) // 60
         if hours != 0 and minutes != 0:
-            return f"{int(hours)} Hours {int(minutes)} Minutes"
+            return f"{int(hours)} Hrs {int(minutes)} Mins"
         elif hours == 0:
-            return f"{int(minutes)} Minutes"
+            return f"{int(minutes)} Mins"
         elif minutes == 0:
-            return f"{int(hours)} Hours"
+            return f"{int(hours)} Hrs"
         else:
-            return f"{int(n_seconds)} seconds"
+            return f"{int(n_seconds)} Secs"
     
     def convert_speed_mps_to_minkm(self,speed_mps):
         mps_to_kph = 3.6
