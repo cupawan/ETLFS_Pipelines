@@ -185,7 +185,7 @@
         "Name": {
           "Fn::Sub": "${ApplicationName}-${StSourceName}-eventrule-${Env}"
         },
-        "Description": "Triggers the event at 9:00 AM IST every day",
+        "Description": "Triggers the event every day at 9 AM IST.",
         "ScheduleExpression": "cron(30 3 * * ? *)",
         "State": "ENABLED",
         "Targets": [

@@ -157,7 +157,7 @@
         "Name": {
           "Fn::Sub": "${ApplicationName}-${WeatherSourceName}-eventrule-${Env}"
         },
-        "Description": "Triggers the event at 6:00 AM IST every day",
+        "Description": "Triggers the event every day at 6 AM IST.",
         "ScheduleExpression": "cron(30 0 * * ? *)",
         "State": "ENABLED",
         "Targets": [
