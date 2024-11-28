@@ -174,6 +174,3 @@ class GarminAPI:
         path = "|".join([f"{lat},{lon}" for lat, lon in coordinates])
         map_url = f"{os.environ["GoogleMapsApiPath"].replace("=//","://")}{path}&key={os.environ["GoogleApiKey"]}"
         return map_url
-    
-g = GarminAPI()
-g.setUpGarmin()
