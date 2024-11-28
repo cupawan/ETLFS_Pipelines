@@ -22,11 +22,7 @@ class GarminAPI:
     def setUpGarmin(self):
         api = Garmin(os.environ["MyEmailAddress"], os.environ["MyGarminPassword"])
         api.login()
-        if api.login():
-            return api
-        else:
-            msg = f"Error logging in Garmin API"
-            raise LoginError(msg = msg)
+        return api
     
     def getSleepStats(self):
         logger.info(f"[Sleep Insights]: Fetching Data for {self.today_c_date}")
@@ -178,3 +174,6 @@ class GarminAPI:
         path = "|".join([f"{lat},{lon}" for lat, lon in coordinates])
         map_url = f"{os.environ["GoogleMapsApiPath"].replace("=//","://")}{path}&key={os.environ["GoogleApiKey"]}"
         return map_url
+    
+g = GarminAPI()
+g.setUpGarmin()
