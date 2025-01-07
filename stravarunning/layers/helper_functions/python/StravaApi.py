@@ -4,6 +4,7 @@ import logging
 import requests
 from stravalib.client import Client
 from datetime import datetime, timedelta
+from ErrorHandling import *
 from DatetimeUtils import CommonUtils
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,6 @@ class StravaAPI:
         self.utils = CommonUtils()
         self.ist = pytz.timezone('Asia/Kolkata')
              
-
     def updateEnvironmentTokens(self):
         os.environ["StravaAccessToken"] = self.access_token
         os.environ["StravaRefreshToken"] = self.refresh_token
@@ -86,11 +86,18 @@ class StravaAPI:
         
     def getActivitiesInDateRange(self, after, before):
         epoch_before = int(datetime.strptime(before, "%Y-%m-%d").timestamp())
-        epoch_after = int(datetime.strptime(after, "%Y-%m-%d").timestamp())            
-        response = requests.get(f'{self.activities_url}/', headers=self.headers, params = {'before' : epoch_before, 'after' : epoch_after})
+        epoch_after = int(datetime.strptime(after, "%Y-%m-%d").timestamp())
+        params = {'before' : epoch_before, 'after' : epoch_after, 'per_page': 100}
+        output = []            
+        response = requests.get(f'{self.activities_url}/', headers=self.headers, params = params)
         if response.status_code == 200:
+            output.extend(response.json())
+            page = 1
+            params['page'] = page + 1
+            response = requests.get(f'{self.activities_url}/', headers=self.headers, params = params)
+            output.extend(response.json())
             logger.info(f"[Strava]: Fetched Activities in Date Range {after} to {before} Successfully")
-            return response.json()
+            return output
         elif response.status_code == 401:
             logger.warning(f"[Strava]: {response.status_code} {response.text}\n Refreshing Tokens")
             self.refreshAccessToken()

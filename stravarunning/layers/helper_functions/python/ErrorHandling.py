@@ -4,7 +4,6 @@ class StravaError(Exception):
         self.msg = msg
         self.code = code
         
-        
 class NoDataError(StravaError):
     def __init__(self, msg="", code=404):
         super().__init__(msg, code)
