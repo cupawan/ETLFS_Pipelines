@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from pydantic.dataclasses import dataclass
 
@@ -14,22 +14,22 @@ class UserProfile:
     display_name: str
     full_name: str
     user_name: str
-    profile_image_uuid: str
-    profile_image_url_large: str
-    profile_image_url_medium: str
-    profile_image_url_small: str
-    location: str
-    facebook_url: Optional[str]
-    twitter_url: Optional[str]
-    personal_website: Optional[str]
-    motivation: Optional[str]
-    bio: Optional[str]
-    primary_activity: Optional[str]
+    profile_image_uuid: str | None
+    profile_image_url_large: str | None
+    profile_image_url_medium: str | None
+    profile_image_url_small: str | None
+    location: str | None
+    facebook_url: str | None
+    twitter_url: str | None
+    personal_website: str | None
+    motivation: str | None
+    bio: str | None
+    primary_activity: str | None
     favorite_activity_types: List[str]
     running_training_speed: float
     cycling_training_speed: float
     favorite_cycling_activity_types: List[str]
-    cycling_classification: Optional[str]
+    cycling_classification: str | None
     cycling_max_avg_power: float
     swimming_training_speed: float
     profile_visibility: str
@@ -55,9 +55,9 @@ class UserProfile:
     show_recent_device: bool
     show_recent_gear: bool
     show_badges: bool
-    other_activity: Optional[str]
-    other_primary_activity: Optional[str]
-    other_motivation: Optional[str]
+    other_activity: str | None
+    other_primary_activity: str | None
+    other_motivation: str | None
     user_roles: List[str]
     name_approved: bool
     user_profile_full_name: str
@@ -73,7 +73,7 @@ class UserProfile:
     user_pro: bool
 
     @classmethod
-    def get(cls, /, client: Optional[http.Client] = None):
+    def get(cls, /, client: http.Client | None = None):
         client = client or http.client
         profile = client.connectapi("/userprofile-service/socialProfile")
         assert isinstance(profile, dict)

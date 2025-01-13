@@ -1,4 +1,4 @@
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 from pydantic.dataclasses import dataclass
 
@@ -7,9 +7,9 @@ from ._base import Stats
 
 @dataclass(frozen=True)
 class DailySleep(Stats):
-    value: Optional[int]
+    value: int | None
 
-    _path: ClassVar[
-        str
-    ] = "/wellness-service/stats/daily/sleep/score/{start}/{end}"
+    _path: ClassVar[str] = (
+        "/wellness-service/stats/daily/sleep/score/{start}/{end}"
+    )
     _page_size: ClassVar[int] = 28

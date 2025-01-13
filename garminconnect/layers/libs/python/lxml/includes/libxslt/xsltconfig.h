@@ -112,7 +112,7 @@ extern "C" {
 #ifndef WITH_MODULES
 #define WITH_MODULES
 #endif
-#define LIBXSLT_DEFAULT_PLUGINS_PATH() "/project/build/tmp/libxml2/lib/libxslt-plugins"
+#define LIBXSLT_DEFAULT_PLUGINS_PATH() "/Users/runner/work/lxml/lxml/build/tmp/libxml2/lib/libxslt-plugins"
 #endif
 
 /**

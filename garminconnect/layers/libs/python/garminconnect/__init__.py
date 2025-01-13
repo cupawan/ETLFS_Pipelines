@@ -11,6 +11,9 @@ from withings_sync import fit
 
 logger = logging.getLogger(__name__)
 
+# Temp fix for API change!
+garth.http.USER_AGENT = {"User-Agent": "GCM-iOS-5.7.2.1"}
+
 
 class Garmin:
     """Class for fetching data from Garmin Connect."""
@@ -26,6 +29,9 @@ class Garmin:
 
         self.garmin_connect_user_settings_url = (
             "/userprofile-service/userprofile/user-settings"
+        )
+        self.garmin_connect_userprofile_settings_url = (
+            "/userprofile-service/userprofile/settings"
         )
         self.garmin_connect_devices_url = (
             "/device-service/deviceregistration/devices"
@@ -60,6 +66,12 @@ class Garmin:
         self.garmin_connect_adhoc_challenges_url = (
             "/adhocchallenge-service/adHocChallenge/historical"
         )
+        self.garmin_connect_adhoc_challenges_url = (
+            "/adhocchallenge-service/adHocChallenge/historical"
+        )
+        self.garmin_connect_adhoc_challenge_url = (
+            "/adhocchallenge-service/adHocChallenge/"
+        )
         self.garmin_connect_badge_challenges_url = (
             "/badgechallenge-service/badgeChallenge/completed"
         )
@@ -84,6 +96,10 @@ class Garmin:
 
         self.garmin_connect_daily_body_battery_url = (
             "/wellness-service/wellness/bodyBattery/reports/daily"
+        )
+
+        self.garmin_connect_body_battery_events_url = (
+            "/wellness-service/wellness/bodyBattery/events"
         )
 
         self.garmin_connect_blood_pressure_endpoint = (
@@ -138,11 +154,18 @@ class Garmin:
         self.garmin_connect_daily_spo2_url = (
             "/wellness-service/wellness/daily/spo2"
         )
+        self.garmin_connect_daily_intensity_minutes = (
+            "/wellness-service/wellness/daily/im"
+        )
         self.garmin_all_day_stress_url = (
             "/wellness-service/wellness/dailyStress"
         )
+        self.garmin_daily_events_url = "/wellness-service/wellness/dailyEvents"
         self.garmin_connect_activities = (
             "/activitylist-service/activities/search/activities"
+        )
+        self.garmin_connect_activities_baseurl = (
+            "/activitylist-service/activities/"
         )
         self.garmin_connect_activity = "/activity-service/activity"
         self.garmin_connect_activity_types = (
@@ -181,8 +204,12 @@ class Garmin:
 
         self.garmin_connect_delete_activity_url = "/activity-service/activity"
 
+        self.garmin_graphql_endpoint = "graphql-gateway/graphql"
+
         self.garth = garth.Client(
-            domain="garmin.cn" if is_cn else "garmin.com"
+            domain="garmin.cn" if is_cn else "garmin.com",
+            pool_connections=20,
+            pool_maxsize=20,
         )
 
         self.display_name = None
@@ -371,6 +398,44 @@ class Garmin:
 
         return self.garth.post("connectapi", url, json=payload)
 
+    def add_weigh_in_with_timestamps(
+        self,
+        weight: int,
+        unitKey: str = "kg",
+        dateTimestamp: str = "",
+        gmtTimestamp: str = "",
+    ):
+        """Add a weigh-in with explicit timestamps (default to kg)"""
+
+        url = f"{self.garmin_connect_weight_url}/user-weight"
+
+        # Validate and format the timestamps
+        dt = (
+            datetime.fromisoformat(dateTimestamp)
+            if dateTimestamp
+            else datetime.now()
+        )
+        dtGMT = (
+            datetime.fromisoformat(gmtTimestamp)
+            if gmtTimestamp
+            else dt.astimezone(timezone.utc)
+        )
+
+        # Build the payload
+        payload = {
+            "dateTimestamp": dt.isoformat()[:19] + ".00",  # Local time
+            "gmtTimestamp": dtGMT.isoformat()[:19] + ".00",  # GMT/UTC time
+            "unitKey": unitKey,
+            "sourceType": "MANUAL",
+            "value": weight,
+        }
+
+        # Debug log for payload
+        logger.debug(f"Adding weigh-in with explicit timestamps: {payload}")
+
+        # Make the POST request
+        return self.garth.post("connectapi", url, json=payload)
+
     def get_weigh_ins(self, startdate: str, enddate: str):
         """Get weigh-ins between startdate and enddate using format 'YYYY-MM-DD'."""
 
@@ -441,6 +506,18 @@ class Garmin:
 
         return self.connectapi(url, params=params)
 
+    def get_body_battery_events(self, cdate: str) -> List[Dict[str, Any]]:
+        """
+        Return body battery events for date 'cdate' format 'YYYY-MM-DD'.
+        The return value is a list of dictionaries, where each dictionary contains event data for a specific event.
+        Events can include sleep, recorded activities, auto-detected activities, and naps
+        """
+
+        url = f"{self.garmin_connect_body_battery_events_url}/{cdate}"
+        logger.debug("Requesting body battery event data")
+
+        return self.connectapi(url)
+
     def set_blood_pressure(
         self,
         systolic: int,
@@ -486,6 +563,18 @@ class Garmin:
         logger.debug("Requesting blood pressure data")
 
         return self.connectapi(url, params=params)
+
+    def delete_blood_pressure(self, version: str, cdate: str):
+        """Delete specific blood pressure measurement."""
+        url = f"{self.garmin_connect_set_blood_pressure_endpoint}/{cdate}/{version}"
+        logger.debug("Deleting blood pressure measurement")
+
+        return self.garth.request(
+            "DELETE",
+            "connectapi",
+            url,
+            api=True,
+        )
 
     def get_max_metrics(self, cdate: str) -> Dict[str, Any]:
         """Return available max metric data for 'cdate' format 'YYYY-MM-DD'."""
@@ -558,10 +647,29 @@ class Garmin:
 
         return self.connectapi(url)
 
+    def get_intensity_minutes_data(self, cdate: str) -> Dict[str, Any]:
+        """Return available Intensity Minutes data 'cdate' format 'YYYY-MM-DD'."""
+
+        url = f"{self.garmin_connect_daily_intensity_minutes}/{cdate}"
+        logger.debug("Requesting Intensity Minutes data")
+
+        return self.connectapi(url)
+
     def get_all_day_stress(self, cdate: str) -> Dict[str, Any]:
         """Return available all day stress data 'cdate' format 'YYYY-MM-DD'."""
 
         url = f"{self.garmin_all_day_stress_url}/{cdate}"
+        logger.debug("Requesting all day stress data")
+
+        return self.connectapi(url)
+
+    def get_all_day_events(self, cdate: str) -> Dict[str, Any]:
+        """
+        Return available daily events data 'cdate' format 'YYYY-MM-DD'.
+        Includes autodetected activities, even if not recorded on the watch
+        """
+
+        url = f"{self.garmin_daily_events_url}?calendarDate={cdate}"
         logger.debug("Requesting all day stress data")
 
         return self.connectapi(url)
@@ -850,8 +958,13 @@ class Garmin:
 
         return self.connectapi(url)
 
-    def get_activities(self, start, limit):
-        """Return available activities."""
+    def get_activities(self, start: int = 0, limit: int = 20):
+        """
+        Return available activities.
+        :param start: Starting activity offset, where 0 means the most recent activity
+        :param limit: Number of activities to return
+        :return: List of activities from Garmin
+        """
 
         url = self.garmin_connect_activities
         params = {"start": str(start), "limit": str(limit)}
@@ -874,6 +987,61 @@ class Garmin:
         payload = {"activityId": activity_id, "activityName": title}
 
         return self.garth.put("connectapi", url, json=payload, api=True)
+
+    def set_activity_type(
+        self, activity_id, type_id, type_key, parent_type_id
+    ):
+        url = f"{self.garmin_connect_activity}/{activity_id}"
+        payload = {
+            "activityId": activity_id,
+            "activityTypeDTO": {
+                "typeId": type_id,
+                "typeKey": type_key,
+                "parentTypeId": parent_type_id,
+            },
+        }
+        logger.debug(f"Changing activity type: {str(payload)}")
+        return self.garth.put("connectapi", url, json=payload, api=True)
+
+    def create_manual_activity_from_json(self, payload):
+        url = f"{self.garmin_connect_activity}"
+        logger.debug(f"Uploading manual activity: {str(payload)}")
+        return self.garth.post("connectapi", url, json=payload, api=True)
+
+    def create_manual_activity(
+        self,
+        start_datetime,
+        timezone,
+        type_key,
+        distance_km,
+        duration_min,
+        activity_name,
+    ):
+        """
+        Create a private activity manually with a few basic parameters.
+        type_key - Garmin field representing type of activity. See https://connect.garmin.com/modern/main/js/properties/activity_types/activity_types.properties
+                    Value to use is the key without 'activity_type_' prefix, e.g. 'resort_skiing'
+        start_datetime - timestamp in this pattern "2023-12-02T10:00:00.00"
+        timezone - local timezone of the activity, e.g. 'Europe/Paris'
+        distance_km - distance of the activity in kilometers
+        duration_min - duration of the activity in minutes
+        activity_name - the title
+        """
+        payload = {
+            "activityTypeDTO": {"typeKey": type_key},
+            "accessControlRuleDTO": {"typeId": 2, "typeKey": "private"},
+            "timeZoneUnitDTO": {"unitKey": timezone},
+            "activityName": activity_name,
+            "metadataDTO": {
+                "autoCalcCalories": True,
+            },
+            "summaryDTO": {
+                "startTimeLocal": start_datetime,
+                "distance": distance_km * 1000,
+                "duration": duration_min * 60,
+            },
+        }
+        return self.create_manual_activity_from_json(payload)
 
     def get_last_activity(self):
         """Return last activity."""
@@ -918,14 +1086,18 @@ class Garmin:
             api=True,
         )
 
-    def get_activities_by_date(self, startdate, enddate, activitytype=None):
+    def get_activities_by_date(
+        self, startdate, enddate=None, activitytype=None, sortorder=None
+    ):
         """
         Fetch available activities between specific dates
         :param startdate: String in the format YYYY-MM-DD
-        :param enddate: String in the format YYYY-MM-DD
+        :param enddate: (Optional) String in the format YYYY-MM-DD
         :param activitytype: (Optional) Type of activity you are searching
                              Possible values are [cycling, running, swimming,
                              multi_sport, fitness_equipment, hiking, walking, other]
+        :param sortorder: (Optional) sorting direction. By default, Garmin uses descending order by startLocal field.
+                          Use "asc" to get activities from oldest to newest.
         :return: list of JSON activities
         """
 
@@ -938,12 +1110,15 @@ class Garmin:
         url = self.garmin_connect_activities
         params = {
             "startDate": str(startdate),
-            "endDate": str(enddate),
             "start": str(start),
             "limit": str(limit),
         }
+        if enddate:
+            params["endDate"] = str(enddate)
         if activitytype:
             params["activityType"] = str(activitytype)
+        if sortorder:
+            params["sortOrder"] = str(sortorder)
 
         logger.debug(
             f"Requesting activities by date from {startdate} to {enddate}"
@@ -1104,6 +1279,16 @@ class Garmin:
 
         return self.connectapi(url)
 
+    def get_activity_typed_splits(self, activity_id):
+        """Return typed activity splits. Contains similar info to `get_activity_splits`, but for certain activity types
+        (e.g., Bouldering), this contains more detail."""
+
+        activity_id = str(activity_id)
+        url = f"{self.garmin_connect_activity}/{activity_id}/typedsplits"
+        logger.debug("Requesting typed splits for activity id %s", activity_id)
+
+        return self.connectapi(url)
+
     def get_activity_split_summaries(self, activity_id):
         """Return activity split summaries."""
 
@@ -1182,11 +1367,29 @@ class Garmin:
 
         return self.connectapi(url, params=params)
 
+    def get_gear_ativities(self, gearUUID):
+        """Return activities where gear uuid was used."""
+
+        gearUUID = str(gearUUID)
+
+        url = f"{self.garmin_connect_activities_baseurl}{gearUUID}/gear?start=0&limit=9999"
+        logger.debug("Requesting activities for gearUUID %s", gearUUID)
+
+        return self.connectapi(url)
+
     def get_user_profile(self):
         """Get all users settings."""
 
         url = self.garmin_connect_user_settings_url
         logger.debug("Requesting user profile.")
+
+        return self.connectapi(url)
+
+    def get_userprofile_settings(self):
+        """Get user settings."""
+
+        url = self.garmin_connect_userprofile_settings_url
+        logger.debug("Getting userprofile settings")
 
         return self.connectapi(url)
 
@@ -1255,6 +1458,17 @@ class Garmin:
         logger.debug("Requesting pregnancy snapshot data")
 
         return self.connectapi(url)
+
+    def query_garmin_graphql(self, query: dict):
+        """Returns the results of a POST request to the Garmin GraphQL Endpoints.
+        Requires a GraphQL structured query.  See {TBD} for examples.
+        """
+
+        logger.debug(f"Querying Garmin GraphQL Endpoint with query: {query}")
+
+        return self.garth.post(
+            "connectapi", self.garmin_graphql_endpoint, json=query
+        ).json()
 
     def logout(self):
         """Log user out of session."""

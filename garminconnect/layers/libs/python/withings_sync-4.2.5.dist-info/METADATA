@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: withings-sync
 Version: 4.2.5
 Summary: A tool for synchronisation of Withings (ex. Nokia Health Body) to Garmin Connect and Trainer Road.
@@ -13,8 +13,18 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: lxml
 Requires-Dist: requests
-Requires-Dist: garth >=0.4.32
+Requires-Dist: garth>=0.4.32
 Requires-Dist: python-dotenv
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
 
 # withings-sync
 
