@@ -190,7 +190,7 @@
           "GarminProfileImageValue": {
             "Ref": "GarminProfileImage"
           },
-          "GarminRunHour": {
+          "GarminRunSchedule": {
             "Ref": "GarminRunHour"
           }
         }
