@@ -9,7 +9,6 @@ before_script:
   - apt-get install -y awscli zip
   - pip install aws-sam-cli
 
-
 # build:
 #   stage: build
 #   script:
