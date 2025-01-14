@@ -102,7 +102,7 @@
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "FunctionName": {
-          "Fn::Sub": "${ApplicationName}-${SourceName}-lambda-${Env}"
+          "Fn::Sub": "${ApplicationName}-${SourceName}-${Env}"
         },
         "Description": "Lambda Function to Pull Statistics from Garmin API",
         "Runtime": "python3.12",
@@ -161,7 +161,7 @@
               "Ref": "GarminProfileImageValue"
             },
             "RunHour": {
-              "Fn::Sub": "${GarminRunSchedule}"
+              "Ref": "GarminRunSchedule"
             }
           }
         },
