@@ -135,7 +135,9 @@
                                 "dynamodb:Query",
                                 "dynamodb:Scan"
                             ],
-                             "Resource": "*"
+                             "Resource": {
+                               "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ApplicationName}*"
+                             }
                         }
                     ]
                 },
