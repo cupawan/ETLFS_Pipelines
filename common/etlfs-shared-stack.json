@@ -123,6 +123,19 @@
                                     "Fn::Sub": "arn:aws:s3:::${CommonS3Bucket}/*"
                                   }
                             ]
+                        },
+                        {
+                            "Sid": "DynamoDbPermissions",
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:PutItem",
+                                "dynamodb:GetItem",
+                                "dynamodb:UpdateItem",
+                                "dynamodb:DeleteItem",
+                                "dynamodb:Query",
+                                "dynamodb:Scan"
+                            ],
+                             "Resource": "*"
                         }
                     ]
                 },

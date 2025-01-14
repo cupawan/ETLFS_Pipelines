@@ -102,7 +102,7 @@
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "FunctionName": {
-          "Fn::Sub": "${ApplicationName}-${SourceName}-${Env}"
+          "Fn::Sub": "${ApplicationName}-${SourceName}-lambda-${Env}"
         },
         "Description": "Lambda Function to Pull Statistics from Garmin API",
         "Runtime": "python3.12",
@@ -245,6 +245,36 @@
         }
       },
       "DependsOn": "LambdaFunction"
+    },
+    "DynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": {
+          "Fn::Sub": "${ApplicationName}-${SourceName}-table-${Env}"
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "date",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "date",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "Non Production"
+          }
+        ]
+      }
     }
   }
 }
