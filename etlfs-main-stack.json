@@ -115,7 +115,7 @@
       "NoEcho": "true"
     },
     "GarminRunHour": {
-      "Type": "String",
+      "Type": "Integer",
       "NoEcho": "true"
     }
   },

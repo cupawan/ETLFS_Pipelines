@@ -70,7 +70,7 @@
       "NoEcho": "true"
     },
     "GarminRunSchedule": {
-      "Type": "String"
+      "Type": "Integer"
     }
   },
   "Resources": {
