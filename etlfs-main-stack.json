@@ -115,7 +115,7 @@
       "NoEcho": "true"
     },
     "GarminRunHour": {
-      "Type": "Number",
+      "Type": "String",
       "NoEcho": "true"
     }
   },
@@ -190,7 +190,7 @@
           "GarminProfileImageValue": {
             "Ref": "GarminProfileImage"
           },
-          "GarminRunSchedule": {
+          "GarminRunHour": {
             "Ref": "GarminRunHour"
           }
         }
