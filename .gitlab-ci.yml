@@ -21,6 +21,8 @@ deploy:
     - source $CupawanEtlfsGroup
     - source $GarminSecrets
     - source $OwmSecrets
+    - echo "GARMIN RUN HOUR"
+    - echo $GarminRunHour
     - aws configure set aws_access_key_id $Aws_Access_Key
     - aws configure set aws_secret_access_key $Aws_Secret_Access_Key
     - aws configure set default.region $Aws_Default_Region
