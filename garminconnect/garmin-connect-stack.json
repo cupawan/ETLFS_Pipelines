@@ -161,7 +161,7 @@
               "Ref": "GarminProfileImageValue"
             },
             "RunHour": {
-              "Ref": "GarminRunSchedule"
+              "Fn::Sub": "${GarminRunSchedule}"
             }
           }
         },
