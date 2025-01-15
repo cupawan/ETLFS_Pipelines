@@ -100,10 +100,10 @@ class GarminAPI:
         metadata['device_name'] = self.getPrimaryTrainingDevice()[0]
         metadata['device_image'] = self.getPrimaryTrainingDevice()[1]
         metadata['running_streak'] = self.getRunningStreak()
-        metadata['map_url'] = self.getMapImage()
         for i in data['ActivitiesForDay']['payload']:
             if i['activityType']['typeKey'] == "running":
                 activity_id = i['activityId']
+                metadata['map_url'] = self.getMapImage(activity_id = activity_id)
                 running_data["activity_id"] =activity_id
                 data = self.api.get_activity(activity_id = activity_id)
                 # metadata['profile_image'] = data['metadataDTO']['userInfoDto']['profileImageUrlMedium']
