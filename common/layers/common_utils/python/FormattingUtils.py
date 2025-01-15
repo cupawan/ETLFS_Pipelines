@@ -10,10 +10,10 @@ class Formatter:
         return f"""
         <h3 class="section-title">Running ({running_data['formatted_date']})</h3> 
         <div style="text-align: center; margin-bottom: 20px;">
-        <img src="{running_data['mapUrl']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <img src="{running_data['map_url']}" alt="Running Map" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             </div>
         <div style="text-align: left; margin-bottom: 20px;">
-        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {running_data['streak']} Days</h2>
+        <h2 style="font-weight: bold; color: #00bfa5;">Streak: {running_data['running_streak']} Days</h2>
     </div>
         <table style="width:100%; border-collapse: collapse; text-align: left;">
             <tr>

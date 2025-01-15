@@ -90,7 +90,7 @@ class GarminAPI:
         return d       
     
     def getRunningData(self):
-        logger.info("[Running]: Fetching Data for {self.today_c_date}")
+        logger.info(f"[Running]: Fetching Data for {self.today_c_date}")
         running_data = defaultdict(lambda:0)
         metadata = defaultdict(lambda:0)
         data = self.api.get_activities_fordate(fordate = self.today_c_date)
